@@ -1,0 +1,1 @@
+A simple cli app to track your habits.
