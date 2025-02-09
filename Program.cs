@@ -1,6 +1,8 @@
 ﻿string[] habitsToTrack = ["Meditate", "Read", "Walk", "Code"];
 DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday };
 var dt = DateTime.Now;
+string checkIcon = "- [x] ";
+string uncheckIcon = "- [ ] ";
 
 // User input helper vriables
 string? userInput;
@@ -38,12 +40,32 @@ void ShowWeekGrid()
     foreach (var day in daysOfWeek)
     {
         string currentWeekDay = $"{day.ToString()} ";
+
         weekGrid += currentWeekDay;
     }
     Console.WriteLine($"\t\t{weekGrid}\n");
 
     foreach (string habit in habitsToTrack)
     {
-        Console.WriteLine($"{habit}\n");
+        string habitCheckRow = "";
+
+        for (int i = 0; i < daysOfWeek.Length; i++)
+        {
+            string currentWeekDay = "";
+
+            if (i == 0)
+            {
+                currentWeekDay = uncheckIcon;
+                habitCheckRow += currentWeekDay;
+            }
+
+            else
+            {
+                currentWeekDay = $"{uncheckIcon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
+                habitCheckRow += currentWeekDay;
+            }
+        }
+        Console.Write($"{habit}");
+        Console.WriteLine($"{habitCheckRow}\n".PadLeft(72 - habit.Length));
     }
 }
