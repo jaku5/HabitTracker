@@ -43,11 +43,12 @@ void ShowWeekGrid()
 
         weekGrid += currentWeekDay;
     }
-    Console.WriteLine($"\t\t{weekGrid}\n");
+    Console.WriteLine($"\t\t{weekGrid} Current Record\n");
 
     foreach (string habit in habitsToTrack)
     {
         string habitCheckRow = "";
+        string streaksRow = "";
 
         for (int i = 0; i < daysOfWeek.Length; i++)
         {
@@ -59,6 +60,17 @@ void ShowWeekGrid()
                 habitCheckRow += currentWeekDay;
             }
 
+            else if (i == daysOfWeek.Length - 1)
+            {
+                int currentStreak = 0;
+                int recordStreak = 0;
+
+                currentWeekDay = $"{uncheckIcon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
+                habitCheckRow += currentWeekDay;
+                
+                streaksRow = $"{currentStreak}".ToString().PadLeft(daysOfWeek[i].ToString().Length - 3) + $"{recordStreak}".ToString().PadLeft(8);
+            }
+
             else
             {
                 currentWeekDay = $"{uncheckIcon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
@@ -66,6 +78,7 @@ void ShowWeekGrid()
             }
         }
         Console.Write($"{habit}");
-        Console.WriteLine($"{habitCheckRow}\n".PadLeft(72 - habit.Length));
+        // @TODO: Handle long habit names.
+        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
     }
 }
