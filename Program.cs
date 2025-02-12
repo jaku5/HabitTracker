@@ -11,7 +11,6 @@ bool exit = false;
 
 do
 {
-    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {dt.DayOfWeek} {DateOnly.FromDateTime(dt)}.\n");
     // Add setting for selecting first day of the week (or implement getting user locale setting).
     SetFirstDayOfWeek(firstDayOfWeek);
     // Disaplay current week and habit status
@@ -34,7 +33,9 @@ while (exit == false);
 
 void ShowWeekGrid()
 {
-    SetFirstDayOfWeek(firstDayOfWeek);
+    // SetFirstDayOfWeek(firstDayOfWeek);
+    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {dt.DayOfWeek} {DateOnly.FromDateTime(dt)}.\n");
+
     // Grid Header
     string weekGridHeader = "";
 
@@ -52,16 +53,28 @@ void ShowWeekGrid()
         string habitCheckRow = "";
         string streaksRow = "";
         string habitEntryDate = "";
+        string habitEntry = "";
+
+        bool habitDone = false;
 
         for (int i = 0; i < daysOfWeek.Length; i++)
         {
             string currentWeekDay = "";
             // habitEntryDate = CalculateGridDates(habit, i).Day.ToString();
-            habitEntryDate = "";
+            // habitEntryDate = CalculateGridDates(habit, i).Day.ToString();
+            // habitEntries[x, i];
+            DateOnly habitDate = (CalculateGridDates(habit, i));
+            string icon = uncheckIcon;
+
+            habitDone = MarkHabitDone(habit, habitDate);
+            // habitDone = LoadGridData(habit, habitDate, habitDone);
+
+            if (habitDone)
+                icon = checkIcon;
 
             if (i == 0)
             {
-                currentWeekDay = uncheckIcon;
+                currentWeekDay = icon;
                 habitCheckRow += currentWeekDay + habitEntryDate;
             }
 
@@ -70,7 +83,7 @@ void ShowWeekGrid()
                 int currentStreak = 0;
                 int recordStreak = 0;
 
-                currentWeekDay = $"{uncheckIcon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
+                currentWeekDay = $"{icon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
                 habitCheckRow += currentWeekDay + habitEntryDate;
 
                 streaksRow = $"{currentStreak}".ToString().PadLeft(daysOfWeek[i].ToString().Length - 3) + $"{recordStreak}".ToString().PadLeft(8);
@@ -78,7 +91,7 @@ void ShowWeekGrid()
 
             else
             {
-                currentWeekDay = $"{uncheckIcon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
+                currentWeekDay = $"{icon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
                 habitCheckRow += currentWeekDay + habitEntryDate;
             }
         }
@@ -135,4 +148,9 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
             counter++;
         }
     }
+}
+
+bool MarkHabitDone(string habit, DateOnly habitDate, bool habitDone = true)
+{
+    return habitDone;
 }
