@@ -193,15 +193,15 @@ int CalculateRecordStreak(string habit)
 {
     int recordStreak = 0;
 
-    foreach (string currentCompletedHabit in habitsCompleted)
+    foreach (string habitCompletedID in habitsCompleted)
     {
         DateOnly currentHabitDate;
-        DateOnly.TryParse(currentCompletedHabit.Substring(habit.Length), out currentHabitDate);
+        DateOnly.TryParse(habitCompletedID.Substring(habit.Length), out currentHabitDate);
         string currentHabitID = $"{habit}{currentHabitDate}";
 
         int tempRecordStreak = 0;
 
-        if (currentCompletedHabit.ToString().Contains(habit))
+        if (habitCompletedID.ToString().Contains(habit))
         {
             while (habitsCompleted.Contains(currentHabitID))
             {
