@@ -3,6 +3,7 @@ DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, D
 var dt = DateTime.Now;
 string checkIcon = "- [x] ";
 string uncheckIcon = "- [ ] ";
+DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 // User input helper vriables
 string? userInput;
@@ -11,13 +12,16 @@ bool exit = false;
 do
 {
     Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {dt.DayOfWeek} {DateOnly.FromDateTime(dt)}.\n");
+    // Add setting for selecting first day of the week (or implement getting user locale setting).
+    SetFirstDayOfWeek(firstDayOfWeek);
+    // Disaplay current week and habit status
+    // Display current / selected week habit streak na all time best streak
+    ShowWeekGrid();
     // Present menu options
     // Show custom date
-    ShowWeekGrid();
     // Add habit to list
     // Remove habit from list
     // Mark habit as completed
-
     Console.WriteLine();
 
     userInput = Console.ReadLine();
@@ -25,26 +29,24 @@ do
     {
         exit = true;
     }
-
-    // Disaplay current week and habit status
-    // Display current / selected week habit streak na all time best streak
-    // Add setting for selecting first day of the week (or implement getting user locale setting).
-
 }
 while (exit == false);
 
 void ShowWeekGrid()
 {
-    string weekGrid = "";
+    SetFirstDayOfWeek(firstDayOfWeek);
+    // Grid Header
+    string weekGridHeader = "";
 
     foreach (var day in daysOfWeek)
     {
         string currentWeekDay = $"{day.ToString()} ";
 
-        weekGrid += currentWeekDay;
+        weekGridHeader += currentWeekDay;
     }
-    Console.WriteLine($"\t\t{weekGrid} Current Record\n");
+    Console.WriteLine($"\t\t{weekGridHeader} Current Record\n");
 
+    // Grid Body
     foreach (string habit in habitsToTrack)
     {
         string habitCheckRow = "";
@@ -54,7 +56,8 @@ void ShowWeekGrid()
         for (int i = 0; i < daysOfWeek.Length; i++)
         {
             string currentWeekDay = "";
-            habitEntryDate = CalculateGridDate(habit, i).ToString();
+            // habitEntryDate = CalculateGridDates(habit, i).Day.ToString();
+            habitEntryDate = "";
 
             if (i == 0)
             {
@@ -85,32 +88,51 @@ void ShowWeekGrid()
     }
 }
 
-DateOnly CalculateGridDate(string habit, int weekDay)
+DateOnly CalculateGridDates(string habit, int weekDay)
 {
-    DateOnly habitEntryDate = new DateOnly();
-    int dateDaysDifference = 0;
 
-    // Custom start of week day calculations
-    // if (weekDay > 0)
-    //     weekDay--;
-    // else
-    //     weekDay = 6;
+    DateOnly habitGridEntryDate = new DateOnly();
+    int dateDaysDifference = 0;
 
 
     if (daysOfWeek[weekDay] == dt.DayOfWeek)
     {
-        habitEntryDate = DateOnly.FromDateTime(dt);
+        habitGridEntryDate = DateOnly.FromDateTime(dt);
     }
 
     else
     {
-        dateDaysDifference = (int)(weekDay - dt.DayOfWeek);
+        dateDaysDifference = weekDay - Array.IndexOf(daysOfWeek, dt.DayOfWeek);
         DateTime habitEntryCalculatedDate = new DateTime();
 
         habitEntryCalculatedDate = dt.AddDays(dateDaysDifference);
-        habitEntryDate = DateOnly.FromDateTime(habitEntryCalculatedDate);
+        habitGridEntryDate = DateOnly.FromDateTime(habitEntryCalculatedDate);
     }
 
+    return habitGridEntryDate;
+}
 
-    return habitEntryDate;
+void SetFirstDayOfWeek(DayOfWeek customFirstDay)
+{
+    int dayOfWeekOffset = 0;
+
+    if (customFirstDay != DayOfWeek.Sunday)
+    {
+        dayOfWeekOffset = 7 - (int)customFirstDay;
+
+        daysOfWeek[0] = customFirstDay;
+        for (int i = 1; i < dayOfWeekOffset; i++)
+        {
+            daysOfWeek[i] = customFirstDay + i;
+        }
+
+        daysOfWeek[dayOfWeekOffset] = DayOfWeek.Sunday;
+        int counter = 0;
+
+        for (int i = dayOfWeekOffset; i < daysOfWeek.Length; i++)
+        {
+            daysOfWeek[i] = DayOfWeek.Sunday + counter;
+            counter++;
+        }
+    }
 }
