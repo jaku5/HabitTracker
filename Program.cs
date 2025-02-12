@@ -47,6 +47,7 @@ while (exit == false);
 
 void ShowWeekGrid()
 {
+    Console.Clear();
     Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {dt.DayOfWeek} {DateOnly.FromDateTime(dt)}.\n");
 
     // Grid Header
@@ -169,7 +170,6 @@ void MarkHabitDone(string habitEntryID, bool habitDone = true)
     else
         habitsCompleted.Add(habitEntryID);
 
-    Console.Clear();
     ShowWeekGrid();
 }
 
@@ -198,7 +198,7 @@ int CalculateRecordStreak(string habit)
         DateOnly currentHabitDate;
         DateOnly.TryParse(currentCompletedHabit.Substring(habit.Length), out currentHabitDate);
         string currentHabitID = $"{habit}{currentHabitDate}";
-        
+
         int tempRecordStreak = 0;
 
         if (currentCompletedHabit.ToString().Contains(habit))
@@ -214,5 +214,6 @@ int CalculateRecordStreak(string habit)
                 recordStreak = tempRecordStreak;
         }
     }
+
     return recordStreak;
 }
