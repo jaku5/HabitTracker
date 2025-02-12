@@ -23,10 +23,13 @@ do
         // Mark habit as completed
     MarkHabitDone("Walk2/12/2025");
     MarkHabitDone("Walk2/11/2025");
+    MarkHabitDone("Walk2/10/2025");
     // MarkHabitDone("Read2/16/2025");
     MarkHabitDone("Read2/12/2025", false);
     MarkHabitDone("Read2/11/2025");
     MarkHabitDone("Read2/10/2025");
+    MarkHabitDone("Read2/9/2025");
+    MarkHabitDone("Read2/8/2025");
     MarkHabitDone("Meditate2/12/2025");
     MarkHabitDone("Read2/10/2025");
     MarkHabitDone("Read2/11/2025");
@@ -176,15 +179,13 @@ int CalculateCurrentStreak(string habit)
     DateOnly currentHabitDate = DateOnly.FromDateTime(dt);
     string currentHabitID = $"{habit}{currentHabitDate}";
 
-    if (habitsCompleted.Contains(currentHabitID))
+    while (habitsCompleted.Contains(currentHabitID))    
     {
-        do
-        {
-            currentHabitDate = currentHabitDate.AddDays(-1);
-            currentHabitID = habit + currentHabitDate;
-            currentStreak++;
-        } while (habitsCompleted.Contains(currentHabitID));
+        currentHabitDate = currentHabitDate.AddDays(-1);
+        currentHabitID = habit + currentHabitDate;
+        currentStreak++;
     }
+    
     return currentStreak;
 }
 
