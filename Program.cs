@@ -12,27 +12,28 @@ bool exit = false;
 
 do
 {
-    // SetFirstDayOfWeek(firstDayOfWeek);
-    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {dt.DayOfWeek} {DateOnly.FromDateTime(dt)}.\n\n");
-
     // Add setting for selecting first day of the week (or implement getting user locale setting).
     SetFirstDayOfWeek(firstDayOfWeek);
-    // Disaplay current week and habit status
     // Display current / selected week habit streak na all time best streak
     ShowWeekGrid();
     // Present menu options
-    // Show custom date
-    // Add habit to list
-    // Remove habit from list
-    // Mark habit as completed
+        // Show custom date
+        // Add habit to list
+        // Remove habit from list
+        // Mark habit as completed
     MarkHabitDone("Walk2/12/2025");
+    MarkHabitDone("Walk2/11/2025");
     MarkHabitDone("Read2/16/2025");
+    MarkHabitDone("Read2/12/2025");
+    MarkHabitDone("Read2/11/2025");
+    MarkHabitDone("Read2/10/2025");
     MarkHabitDone("Meditate2/12/2025");
     MarkHabitDone("Read2/10/2025");
     MarkHabitDone("Read2/11/2025");
+    MarkHabitDone("Meditate2/14/2025");
     MarkHabitDone("Meditate2/12/2025", false);
-    Console.WriteLine();
-
+    MarkHabitDone("Read2/12/2025", false);
+    
     userInput = Console.ReadLine();
     if (userInput != null && userInput.ToLower().Contains("exit"))
     {
@@ -43,6 +44,8 @@ while (exit == false);
 
 void ShowWeekGrid()
 {
+    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {dt.DayOfWeek} {DateOnly.FromDateTime(dt)}.\n");
+
     // Grid Header
     string weekGridHeader = "";
 
@@ -83,7 +86,7 @@ void ShowWeekGrid()
 
             else if (i == daysOfWeek.Length - 1)
             {
-                int currentStreak = 0;
+                int currentStreak = CalculateCurrentStreak(habit);
                 int recordStreak = 0;
 
                 currentWeekDay = $"{icon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
@@ -155,6 +158,7 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
 
 void MarkHabitDone(string habitEntryID, bool habitDone = true)
 {
+    // @TODO: Handle marking future dates
     if (habitDone == false)
     {
         habitsCompleted.Remove(habitEntryID);
@@ -164,4 +168,22 @@ void MarkHabitDone(string habitEntryID, bool habitDone = true)
 
     Console.Clear();
     ShowWeekGrid();
+}
+
+int CalculateCurrentStreak(string habit)
+{
+    int currentStreak = 0;
+    DateOnly currentHabitDate = DateOnly.FromDateTime(dt);
+    string currentHabitID = $"{habit}{currentHabitDate}";
+
+    if (habitsCompleted.Contains(currentHabitID))
+    {
+        do
+        {
+            currentHabitDate = currentHabitDate.AddDays(-1);
+            currentHabitID = habit + currentHabitDate;
+            currentStreak++;
+        } while (habitsCompleted.Contains(currentHabitID));
+    }
+    return currentStreak;
 }
