@@ -23,17 +23,17 @@ do
         // Mark habit as completed
     MarkHabitDone("Walk2/12/2025");
     MarkHabitDone("Walk2/11/2025");
-    MarkHabitDone("Read2/16/2025");
-    MarkHabitDone("Read2/12/2025");
+    // MarkHabitDone("Read2/16/2025");
+    MarkHabitDone("Read2/12/2025", false);
     MarkHabitDone("Read2/11/2025");
     MarkHabitDone("Read2/10/2025");
     MarkHabitDone("Meditate2/12/2025");
     MarkHabitDone("Read2/10/2025");
     MarkHabitDone("Read2/11/2025");
     MarkHabitDone("Meditate2/14/2025");
-    MarkHabitDone("Meditate2/12/2025", false);
-    MarkHabitDone("Read2/12/2025", false);
-    
+    MarkHabitDone("Meditate2/12/2025");
+    // MarkHabitDone("Read2/12/2025", false);
+
     userInput = Console.ReadLine();
     if (userInput != null && userInput.ToLower().Contains("exit"))
     {
@@ -60,6 +60,9 @@ void ShowWeekGrid()
     // Grid Body
     foreach (string habit in habitsToTrack)
     {
+        int currentStreak = CalculateCurrentStreak(habit);
+        int recordStreak = CalculateRecordStreak(habit);
+
         string habitCheckRow = "";
         string streaksRow = "";
         string habitEntryID = "";
@@ -86,9 +89,6 @@ void ShowWeekGrid()
 
             else if (i == daysOfWeek.Length - 1)
             {
-                int currentStreak = CalculateCurrentStreak(habit);
-                int recordStreak = 0;
-
                 currentWeekDay = $"{icon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
                 habitCheckRow += currentWeekDay;
 
@@ -186,4 +186,31 @@ int CalculateCurrentStreak(string habit)
         } while (habitsCompleted.Contains(currentHabitID));
     }
     return currentStreak;
+}
+
+int CalculateRecordStreak(string habit)
+{
+    int recordStreak = 0;
+
+    foreach (string currentCompletedHabit in habitsCompleted)
+    {
+        int tempRecordStreak = 0;
+        DateOnly currentHabitDate;
+        DateOnly.TryParse(currentCompletedHabit.Substring(habit.Length), out currentHabitDate);
+        string currentHabitID = $"{habit}{currentHabitDate}";
+
+        if (currentCompletedHabit.ToString().Contains(habit))
+        {
+            while (habitsCompleted.Contains(currentHabitID))
+            {
+                currentHabitDate = currentHabitDate.AddDays(-1);
+                currentHabitID = habit + currentHabitDate;
+                tempRecordStreak++;
+            }
+
+            if (tempRecordStreak > recordStreak)
+                recordStreak = tempRecordStreak;
+        }
+    }
+    return recordStreak;
 }
