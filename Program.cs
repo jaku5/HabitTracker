@@ -17,10 +17,10 @@ do
     // Display current / selected week habit streak na all time best streak
     ShowWeekGrid();
     // Present menu options
-        // Show custom date
-        // Add habit to list
-        // Remove habit from list
-        // Mark habit as completed
+    // Show custom date
+    // Add habit to list
+    // Remove habit from list
+    // Mark habit as completed
     MarkHabitDone("Walk2/12/2025");
     MarkHabitDone("Walk2/11/2025");
     MarkHabitDone("Walk2/10/2025");
@@ -179,13 +179,13 @@ int CalculateCurrentStreak(string habit)
     DateOnly currentHabitDate = DateOnly.FromDateTime(dt);
     string currentHabitID = $"{habit}{currentHabitDate}";
 
-    while (habitsCompleted.Contains(currentHabitID))    
+    while (habitsCompleted.Contains(currentHabitID))
     {
         currentHabitDate = currentHabitDate.AddDays(-1);
         currentHabitID = habit + currentHabitDate;
         currentStreak++;
     }
-    
+
     return currentStreak;
 }
 
@@ -195,10 +195,11 @@ int CalculateRecordStreak(string habit)
 
     foreach (string currentCompletedHabit in habitsCompleted)
     {
-        int tempRecordStreak = 0;
         DateOnly currentHabitDate;
         DateOnly.TryParse(currentCompletedHabit.Substring(habit.Length), out currentHabitDate);
         string currentHabitID = $"{habit}{currentHabitDate}";
+        
+        int tempRecordStreak = 0;
 
         if (currentCompletedHabit.ToString().Contains(habit))
         {
