@@ -49,21 +49,21 @@ while (exit == false);
 void ShowWeekGrid()
 {
     Console.Clear();
-    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n");
+    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n\t\tSelected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}.\n");
 
     // Grid Header
     string weekGridHeader = "";
     string weekGridHeaderDates = "";
 
-    foreach (var day in daysOfWeek)
-    {
-        string currentWeekDay = $"{day.ToString()} ";
-        weekGridHeader += currentWeekDay;
-    }
-
     for (int i = 0; i < daysOfWeek.Length; i++)
     {
-        string currentWeekDayDate = $"{CalculateGridDates(habitsToTrack[0], i)} ";
+        string currentWeekDay = $"{daysOfWeek[i].ToString()} ";
+        string currentWeekDayDate = $"{CalculateGridDates(habitsToTrack[0], i).ToString("dd MMM")} ";
+
+        if (i != 0)
+            currentWeekDayDate = $"{CalculateGridDates(habitsToTrack[0], i).ToString("dd MMM").PadLeft(daysOfWeek[i - 1].ToString().Length)} ";
+
+        weekGridHeader += currentWeekDay;
         weekGridHeaderDates += currentWeekDayDate;
     }
     Console.WriteLine($"\t\t{weekGridHeader} Current Record");
@@ -95,7 +95,7 @@ void ShowWeekGrid()
             if (i == 0)
             {
                 currentWeekDay = icon;
-                habitCheckRow += currentWeekDay + habitDate;
+                habitCheckRow += currentWeekDay; // + habitDate;
             }
 
             else if (i == daysOfWeek.Length - 1)
