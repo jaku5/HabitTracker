@@ -11,6 +11,9 @@ bool exit = false;
 
 do
 {
+    // Load user data from the txt file
+    ModifyHabitList("Write");
+    LoadUserData();
     SetFirstDayOfWeek(firstDayOfWeek);
     ShowWeekGrid();
     // Present menu options
@@ -40,6 +43,56 @@ do
 }
 while (exit == false);
 
+void LoadUserData()
+{
+    //@ TODO Handle empty data file
+    string habits = "";
+    string habitsCompletedID = "";
+    StreamReader sr = new StreamReader("./habit_data.txt");
+
+    habits = sr.ReadLine();
+    habitsCompletedID = sr.ReadLine();
+    habitsToTrack = habits.Split(',').ToList();
+    if (habitsCompletedID != "" && habitsCompletedID != null)
+        habitsCompleted = habitsCompletedID.Split(',').ToList();
+    sr.Close(); 
+}
+
+void SaveUserData()
+{
+    string userData = "";
+    string habitList = "";
+    string habitCompletedList = "";
+    StreamWriter sw = new StreamWriter("./habit_data.txt");
+
+    // @TODO Handle empty habit array
+    if (habitsToTrack.Count > 0)
+    {
+        foreach (string habit in habitsToTrack)
+        {
+            habitList += $"{habit}, ";
+        }
+
+        if (habitsCompleted.Count > 0)
+        {
+            foreach (string habitCompletedID in habitsCompleted)
+            {
+                habitCompletedList += $"{habitCompletedID}, ";
+            }
+
+            userData = $"{habitList.Remove(habitList.Length - 2)}\n{habitCompletedList.Remove(habitCompletedList.Length - 2)}";
+        }
+
+        else
+        {
+            userData = $"{habitList.Remove(habitList.Length - 2)}";
+        }
+
+        sw.WriteLine(userData);
+        sw.Close();
+    }
+}
+
 void ModifyHabitList(string habit)
 {
     if (habitsToTrack.Contains(habit))
@@ -60,6 +113,7 @@ void ModifyHabitList(string habit)
         habitsToTrack.Add(habit);
     }
 
+    SaveUserData();
     ShowWeekGrid();
 }
 
@@ -204,6 +258,7 @@ void MarkHabitDone(string habitEntryID, bool habitDone = true)
     else
         habitsCompleted.Add(habitEntryID);
 
+    SaveUserData();
     ShowWeekGrid();
 }
 
