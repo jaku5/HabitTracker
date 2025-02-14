@@ -1,4 +1,4 @@
-﻿string[] habitsToTrack = ["Meditate", "Read", "Walk", "Code"];
+﻿List<string> habitsToTrack = ["Meditate", "Read", "Walk", "Code"];
 DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 List<string> habitsCompleted = new List<string>();
 var currentDate = DateTime.Now;
@@ -11,19 +11,15 @@ bool exit = false;
 
 do
 {
-    // Add setting for selecting first day of the week (or implement getting user locale setting).
     SetFirstDayOfWeek(firstDayOfWeek);
-    // Display current / selected week habit streak na all time best streak
     ShowWeekGrid();
     // Present menu options
     ShowCustomDate(2024, 11, 1);
-    // Add habit to list
-    // Remove habit from list
-    // Mark habit as completed
+    ModifyHabitList("Write");
+    ModifyHabitList("Read");
     MarkHabitDone("Walk2/12/2025");
     MarkHabitDone("Walk2/11/2025");
     MarkHabitDone("Walk2/10/2025");
-    // MarkHabitDone("Read2/16/2025");
     MarkHabitDone("Read2/12/2025", false);
     MarkHabitDone("Read2/11/2025");
     MarkHabitDone("Read2/10/2025");
@@ -34,7 +30,7 @@ do
     MarkHabitDone("Read2/11/2025");
     MarkHabitDone("Meditate2/14/2025");
     MarkHabitDone("Meditate2/12/2025");
-    // MarkHabitDone("Read2/12/2025", false);
+    ModifyHabitList("Read");
 
     userInput = Console.ReadLine();
     if (userInput != null && userInput.ToLower().Contains("exit"))
@@ -43,6 +39,29 @@ do
     }
 }
 while (exit == false);
+
+void ModifyHabitList(string habit)
+{
+    if (habitsToTrack.Contains(habit))
+    {
+        for (int i = 0; i < habitsCompleted.Count; i++)
+        {
+            while (habitsCompleted[i].ToString().Contains(habit))
+            {
+                MarkHabitDone(habitsCompleted[i], false);
+            }
+        }
+
+        habitsToTrack.Remove(habit);
+    }
+
+    else
+    {
+        habitsToTrack.Add(habit);
+    }
+
+    ShowWeekGrid();
+}
 
 void ShowWeekGrid()
 {
