@@ -45,17 +45,30 @@ while (exit == false);
 
 void LoadUserData()
 {
-    //@ TODO Handle empty data file
-    string habits = "";
-    string habitsCompletedID = "";
-    StreamReader sr = new StreamReader("./habit_data.txt");
+    if (File.Exists("./habit_data.txt"))
+    {
+        //@ TODO Handle empty data file
+        string habits = "";
+        string habitsCompletedID = "";
+        StreamReader sr = new StreamReader("./habit_data.txt");
 
-    habits = sr.ReadLine();
-    habitsCompletedID = sr.ReadLine();
-    habitsToTrack = habits.Split(',').ToList();
-    if (habitsCompletedID != "" && habitsCompletedID != null)
-        habitsCompleted = habitsCompletedID.Split(',').ToList();
-    sr.Close(); 
+        habits = sr.ReadLine();
+        habitsCompletedID = sr.ReadLine();
+        habitsToTrack = habits.Replace(" ", "").Split(',').ToList();
+
+        if (habitsCompletedID != "" && habitsCompletedID != null)
+        {
+            habitsCompleted = habitsCompletedID.Replace(" ", "").Split(',').ToList();
+        }
+
+        sr.Close();
+    }
+    else
+    {
+        StreamWriter sw = new StreamWriter("./habit_data.txt");
+        sw.Close();
+    }
+
 }
 
 void SaveUserData()
