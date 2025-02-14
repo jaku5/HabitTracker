@@ -3,8 +3,6 @@ DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, D
 List<string> habitsCompleted = new List<string>();
 var currentDate = DateTime.Now;
 var selectedDate = currentDate;
-string checkIcon = "- [x] ";
-string uncheckIcon = "- [ ] ";
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 // User input helper vriables
@@ -51,7 +49,12 @@ void ShowWeekGrid()
     Console.Clear();
     Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n\t\tSelected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}.\n");
 
-    // Grid Header
+    ShowGridHeader();
+    ShowGridBody();
+}
+
+void ShowGridHeader()
+{
     string weekGridHeader = "";
     string weekGridHeaderDates = "";
 
@@ -68,7 +71,10 @@ void ShowWeekGrid()
     }
     Console.WriteLine($"\t\t{weekGridHeader} Current Record");
     Console.WriteLine($"\t\t{weekGridHeaderDates}\n");
-    // Grid Body
+}
+
+void ShowGridBody()
+{
     foreach (string habit in habitsToTrack)
     {
         int currentStreak = CalculateCurrentStreak(habit);
@@ -82,6 +88,8 @@ void ShowWeekGrid()
         {
             string currentWeekDay = "";
             DateOnly habitDate = CalculateGridDates(habit, i);
+            string checkIcon = "- [x] ";
+            string uncheckIcon = "- [ ] ";
             string icon = uncheckIcon;
             bool habitDone = false;
             habitEntryID = $"{habit}{habitDate}";
