@@ -1,4 +1,4 @@
-﻿List<string> habitsToTrack = ["Meditate", "Read", "Walk", "Code"];
+﻿List<string> habitsToTrack = new List<string>(); //= ["Meditate", "Read", "Walk", "Code"];
 DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 List<string> habitsCompleted = new List<string>();
 var currentDate = DateTime.Now;
@@ -12,28 +12,10 @@ bool exit = false;
 do
 {
     // Load user data from the txt file
-    ModifyHabitList("Write");
     LoadUserData();
     SetFirstDayOfWeek(firstDayOfWeek);
     ShowWeekGrid();
     // Present menu options
-    ShowCustomDate(2024, 11, 1);
-    ModifyHabitList("Write");
-    ModifyHabitList("Read");
-    MarkHabitDone("Walk2/12/2025");
-    MarkHabitDone("Walk2/11/2025");
-    MarkHabitDone("Walk2/10/2025");
-    MarkHabitDone("Read2/12/2025", false);
-    MarkHabitDone("Read2/11/2025");
-    MarkHabitDone("Read2/10/2025");
-    MarkHabitDone("Read2/9/2025");
-    MarkHabitDone("Read2/8/2025");
-    MarkHabitDone("Meditate2/12/2025");
-    MarkHabitDone("Read2/10/2025");
-    MarkHabitDone("Read2/11/2025");
-    MarkHabitDone("Meditate2/14/2025");
-    MarkHabitDone("Meditate2/12/2025");
-    ModifyHabitList("Read");
 
     userInput = Console.ReadLine();
     if (userInput != null && userInput.ToLower().Contains("exit"))
@@ -63,10 +45,22 @@ void LoadUserData()
 
         sr.Close();
     }
+
     else
     {
-        StreamWriter sw = new StreamWriter("./habit_data.txt");
-        sw.Close();
+        do
+        {
+            //@TODO Handle invalid input
+            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter");
+            
+            userInput = Console.ReadLine();
+
+            if (userInput != null && userInput != "")
+            {
+                habitsToTrack.Add(userInput);
+                SaveUserData();
+            }
+        } while (userInput == null || userInput == "");
     }
 
 }
