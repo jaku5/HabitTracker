@@ -1,4 +1,4 @@
-﻿List<string> habitsToTrack = ["Meditate", "Read", "Walk", "Code"];
+﻿List<string> habitsToTrack = new List<string>(); //= ["Meditate", "Read", "Walk", "Code"];
 DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 List<string> habitsCompleted = new List<string>();
 var currentDate = DateTime.Now;
@@ -11,26 +11,11 @@ bool exit = false;
 
 do
 {
+    // Load user data from the txt file
+    LoadUserData();
     SetFirstDayOfWeek(firstDayOfWeek);
     ShowWeekGrid();
     // Present menu options
-    ShowCustomDate(2024, 11, 1);
-    ModifyHabitList("Write");
-    ModifyHabitList("Read");
-    MarkHabitDone("Walk2/12/2025");
-    MarkHabitDone("Walk2/11/2025");
-    MarkHabitDone("Walk2/10/2025");
-    MarkHabitDone("Read2/12/2025", false);
-    MarkHabitDone("Read2/11/2025");
-    MarkHabitDone("Read2/10/2025");
-    MarkHabitDone("Read2/9/2025");
-    MarkHabitDone("Read2/8/2025");
-    MarkHabitDone("Meditate2/12/2025");
-    MarkHabitDone("Read2/10/2025");
-    MarkHabitDone("Read2/11/2025");
-    MarkHabitDone("Meditate2/14/2025");
-    MarkHabitDone("Meditate2/12/2025");
-    ModifyHabitList("Read");
 
     userInput = Console.ReadLine();
     if (userInput != null && userInput.ToLower().Contains("exit"))
@@ -39,6 +24,81 @@ do
     }
 }
 while (exit == false);
+
+void LoadUserData()
+{
+    if (File.Exists("./habit_data.txt"))
+    {
+        //@ TODO Handle empty data file
+        string habits = "";
+        string habitsCompletedID = "";
+        StreamReader sr = new StreamReader("./habit_data.txt");
+
+        habits = sr.ReadLine();
+        habitsCompletedID = sr.ReadLine();
+        habitsToTrack = habits.Replace(" ", "").Split(',').ToList();
+
+        if (habitsCompletedID != "" && habitsCompletedID != null)
+        {
+            habitsCompleted = habitsCompletedID.Replace(" ", "").Split(',').ToList();
+        }
+
+        sr.Close();
+    }
+
+    else
+    {
+        do
+        {
+            //@TODO Handle invalid input
+            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter");
+            
+            userInput = Console.ReadLine();
+
+            if (userInput != null && userInput != "")
+            {
+                habitsToTrack.Add(userInput);
+                SaveUserData();
+            }
+        } while (userInput == null || userInput == "");
+    }
+
+}
+
+void SaveUserData()
+{
+    string userData = "";
+    string habitList = "";
+    string habitCompletedList = "";
+    StreamWriter sw = new StreamWriter("./habit_data.txt");
+
+    // @TODO Handle empty habit array
+    if (habitsToTrack.Count > 0)
+    {
+        foreach (string habit in habitsToTrack)
+        {
+            habitList += $"{habit}, ";
+        }
+
+        if (habitsCompleted.Count > 0)
+        {
+            foreach (string habitCompletedID in habitsCompleted)
+            {
+                habitCompletedList += $"{habitCompletedID}, ";
+            }
+
+            userData = $"{habitList.Remove(habitList.Length - 2)}\n{habitCompletedList.Remove(habitCompletedList.Length - 2)}";
+        }
+
+        else
+        {
+            userData = $"{habitList.Remove(habitList.Length - 2)}";
+        }
+
+        sw.WriteLine(userData);
+        sw.Close();
+    }
+}
 
 void ModifyHabitList(string habit)
 {
@@ -60,6 +120,7 @@ void ModifyHabitList(string habit)
         habitsToTrack.Add(habit);
     }
 
+    SaveUserData();
     ShowWeekGrid();
 }
 
@@ -204,6 +265,7 @@ void MarkHabitDone(string habitEntryID, bool habitDone = true)
     else
         habitsCompleted.Add(habitEntryID);
 
+    SaveUserData();
     ShowWeekGrid();
 }
 
