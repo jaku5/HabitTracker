@@ -23,7 +23,7 @@ do
         exit = true;
     }
 
-    else if (userInput != null && userInput.ToLower().Contains("menu"))
+    else if (userInput != null && (userInput.ToLower().Contains("menu") || userInput.ToLower().Contains('m')))
     {
         ShowMenu();
     }
@@ -33,7 +33,7 @@ while (exit == false);
 void ShowMenu()
 {
     Console.Clear();
-    Console.WriteLine("Select option:");
+    Console.WriteLine($"Select option (selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):\n");
     Console.WriteLine("1. Show week grid for selected date.");
     Console.WriteLine("2. Select date.");
     Console.WriteLine("3. Mark habit as done for selected date.");
@@ -96,7 +96,28 @@ void ShowMenu()
 
         case "3":
 
-            ShowWeekGrid();
+            validInput = false;
+
+            // @TODO Handle invalid input
+            // @TODO Add suport for unmark option
+            Console.WriteLine($"Type habit name youand press enter. Use \"false\" options to unmark habit done status. Selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+            userInput = Console.ReadLine();
+
+            do
+            {
+                if (userInput != null && habitsToTrack.Contains(userInput))
+                {
+                    string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate);
+                    MarkHabitDone(habitsCompletedID);
+                    validInput = true;
+                }
+
+                else
+                {
+                    Console.WriteLine("Habit not on the list. Please enter a valid habit name or add a new habit to the list.");
+                    userInput = Console.ReadLine();
+                }
+            } while (validInput == false);
 
             break;
 
@@ -228,7 +249,7 @@ void ModifyHabitList(string habit)
 void ShowWeekGrid()
 {
     Console.Clear();
-    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n\t\tSelected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}. Type \"menu\" for options.\n");
+    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Today is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n\t\tSelected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}. Type \"menu\" or \"m\" to display options menu.\n");
 
     ShowGridHeader();
     ShowGridBody();
