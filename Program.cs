@@ -100,7 +100,7 @@ void ShowMenu()
 
             // @TODO Handle invalid input
             // @TODO Add suport for unmark option
-            Console.WriteLine($"Type habit name youand press enter. Use \"false\" options to unmark habit done status. Selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+            Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
             userInput = Console.ReadLine();
 
             do
@@ -123,7 +123,23 @@ void ShowMenu()
 
         case "4":
 
-            ShowWeekGrid();
+            validInput = false;
+
+            // @TODO Handle invalid input.
+            // @TODO Add warning and confimration before deleting data.
+            // @TODO Add rename option.
+            Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.");
+            userInput = Console.ReadLine();
+
+            do
+            {
+                if (userInput != null)
+                {
+                    ModifyHabitList(userInput);
+                    validInput = true;
+                }
+                
+            } while (validInput == false);
 
             break;
 
@@ -228,7 +244,7 @@ void ModifyHabitList(string habit)
     {
         for (int i = 0; i < habitsCompleted.Count; i++)
         {
-            while (habitsCompleted[i].ToString().Contains(habit))
+            while (habitsCompleted.Count > 0 && habitsCompleted[i].ToString().Contains(habit))
             {
                 MarkHabitDone(habitsCompleted[i], false);
             }
