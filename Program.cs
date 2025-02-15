@@ -7,23 +7,124 @@ DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 // User input helper vriables
 string? userInput;
+string menuSelection = "";
 bool exit = false;
 
 do
 {
-    // Load user data from the txt file
     LoadUserData();
     SetFirstDayOfWeek(firstDayOfWeek);
     ShowWeekGrid();
-    // Present menu options
 
     userInput = Console.ReadLine();
+
     if (userInput != null && userInput.ToLower().Contains("exit"))
     {
         exit = true;
     }
+
+    else if (userInput != null && userInput.ToLower().Contains("menu"))
+    {
+        ShowMenu();
+    }
 }
 while (exit == false);
+
+void ShowMenu()
+{
+    Console.Clear();
+    Console.WriteLine("Select option:");
+    Console.WriteLine("1. Show week grid for selected date.");
+    Console.WriteLine("2. Select date.");
+    Console.WriteLine("3. Mark habit as done for selected date.");
+    Console.WriteLine("4. Add or remove habit.");
+    Console.WriteLine("5. Set first day of the week");
+
+    // @TODO Handle invalid input
+    userInput = Console.ReadLine();
+
+    if (userInput != null)
+    {
+        menuSelection = userInput.ToLower();
+    }
+
+    switch (menuSelection)
+    {
+        case "1":
+
+            ShowWeekGrid();
+
+            break;
+
+        case "2":
+
+            bool validInput = false;
+            int year = currentDate.Year;
+            int month = currentDate.Month;
+            int day = currentDate.Day;
+
+            // @TODO Handle invalid input
+            Console.WriteLine($"Type year and press enter(default is {year}):");
+            userInput = Console.ReadLine();
+
+            if (userInput != null)
+            {
+                validInput = int.TryParse(userInput, out year);
+            }
+
+            // @TODO Handle invalid input
+            Console.WriteLine($"Type month and press enter(default is {month}):");
+            userInput = Console.ReadLine();
+
+            if (userInput != null)
+            {
+                validInput = int.TryParse(userInput, out month);
+            }
+
+            // @TODO Handle invalid input
+            Console.WriteLine($"Type day and press enter(default is {day}):");
+            userInput = Console.ReadLine();
+
+            if (userInput != null)
+            {
+                validInput = int.TryParse(userInput, out day);
+            }
+
+            SetCustomDate(year, month, day);
+
+            break;
+
+        case "3":
+
+            ShowWeekGrid();
+
+            break;
+
+        case "4":
+
+            ShowWeekGrid();
+
+            break;
+
+        case "5":
+
+            ShowWeekGrid();
+
+            break;
+
+        case "6":
+
+            ShowWeekGrid();
+
+            break;
+
+        default:
+
+            ShowWeekGrid();
+
+            break;
+    }
+}
 
 void LoadUserData()
 {
@@ -52,7 +153,7 @@ void LoadUserData()
         {
             //@TODO Handle invalid input
             Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter");
-            
+
             userInput = Console.ReadLine();
 
             if (userInput != null && userInput != "")
@@ -127,7 +228,7 @@ void ModifyHabitList(string habit)
 void ShowWeekGrid()
 {
     Console.Clear();
-    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n\t\tSelected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}.\n");
+    Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Current date is {currentDate.DayOfWeek} {DateOnly.FromDateTime(currentDate)}.\n\t\tSelected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}. Type \"menu\" for options.\n");
 
     ShowGridHeader();
     ShowGridBody();
@@ -314,7 +415,7 @@ int CalculateRecordStreak(string habit)
     return recordStreak;
 }
 
-void ShowCustomDate(int year, int month, int day)
+void SetCustomDate(int year, int month, int day)
 {
     DateTime customDate = new DateTime(year: year, month: month, day: day);
     selectedDate = customDate;
