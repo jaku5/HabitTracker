@@ -1,5 +1,5 @@
-﻿List<string> habitsToTrack = new List<string>(); //= ["Meditate", "Read", "Walk", "Code"];
-DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+﻿DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+List<string> habitsToTrack = new List<string>();
 List<string> habitsCompleted = new List<string>();
 var currentDate = DateTime.Now;
 var selectedDate = currentDate;
@@ -7,7 +7,6 @@ DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 // User input helper vriables
 string? userInput;
-string menuSelection = "";
 bool exit = false;
 
 do
@@ -32,6 +31,8 @@ while (exit == false);
 
 void ShowMenu()
 {
+    string menuSelection = "";
+
     Console.Clear();
     Console.WriteLine($"Select option (selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):\n");
     Console.WriteLine("1. Show week grid for selected date.");
@@ -372,19 +373,17 @@ void ShowGridBody()
             string checkIcon = "- [x] ";
             string uncheckIcon = "- [ ] ";
             string icon = uncheckIcon;
-            bool habitDone = false;
             habitEntryID = $"{habit}{habitDate}";
 
             if (habitsCompleted.Contains(habitEntryID))
             {
-                habitDone = true;
                 icon = checkIcon;
             }
 
             if (i == 0)
             {
                 currentWeekDay = icon;
-                habitCheckRow += currentWeekDay; // + habitDate;
+                habitCheckRow += currentWeekDay;
             }
 
             else if (i == daysOfWeek.Length - 1)
@@ -409,10 +408,8 @@ void ShowGridBody()
 
 DateOnly CalculateGridDates(string habit, int weekDay)
 {
-
     DateOnly habitGridEntryDate = new DateOnly();
     int dateDaysDifference = 0;
-
 
     if (daysOfWeek[weekDay] == selectedDate.DayOfWeek)
     {
