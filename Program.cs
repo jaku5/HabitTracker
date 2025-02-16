@@ -237,11 +237,11 @@ void LoadUserData()
 
         habits = sr.ReadLine();
         habitsCompletedID = sr.ReadLine();
-        habitsToTrack = habits.Replace(" ", "").Split(',').ToList();
+        habitsToTrack = habits.Replace(", ", ",").Split(',').ToList();
 
         if (habitsCompletedID != "" && habitsCompletedID != null)
         {
-            habitsCompleted = habitsCompletedID.Replace(" ", "").Split(',').ToList();
+            habitsCompleted = habitsCompletedID.Replace(", ", ",").Split(',').ToList();
         }
 
         sr.Close();
