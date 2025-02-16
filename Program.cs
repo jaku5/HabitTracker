@@ -259,7 +259,7 @@ void LoadUserData()
 
             if (userInput != null && userInput != "")
             {
-                habitsToTrack.Add(userInput);
+                ModifyHabitList(userInput);
                 SaveUserData();
             }
         } while (userInput == null || userInput == "");
@@ -400,9 +400,27 @@ void ShowGridBody()
                 habitCheckRow += currentWeekDay;
             }
         }
-        Console.Write($"{habit}");
+/*         if (habit.Length > 14)
+        {
+            string[] longHabitName;
+            habit.Split()
+
+            do
+            {
+                
+                longHabit = $"{habit.Remove(14)}\n{habit.Substring(14)}";
+                Console.Write(longHabit);
+                Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Substring(14).Length) + $"{streaksRow}\n");
+            } while  (longHabitName[i] > 14);
+        }
+
+        else */
+        //{
+            Console.Write($"{habit}");
+            Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
+
+        //}
         // @TODO: Handle long habit names.
-        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
     }
 }
 
