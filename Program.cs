@@ -138,20 +138,83 @@ void ShowMenu()
                     ModifyHabitList(userInput);
                     validInput = true;
                 }
-                
+
             } while (validInput == false);
 
             break;
 
         case "5":
 
-            ShowWeekGrid();
+            validInput = false;
+            int selectedFirstDay = 0;
 
-            break;
+            // @TODO Handle invalid input.
 
-        case "6":
+            Console.WriteLine($"Set first day of the week for the week grid:\n\n1. Monday\n2. Tuesday\n3. Wednesday\n4. Thursday\n5. Friday\n6. Saturday\n7. Sunday");
+            userInput = Console.ReadLine();
 
-            ShowWeekGrid();
+            do
+            {
+                if (int.TryParse(userInput, out selectedFirstDay))
+                {
+
+                    {
+                        switch (selectedFirstDay)
+                        {
+                            case 1:
+
+                                firstDayOfWeek = DayOfWeek.Monday;
+                                validInput = true;
+
+                                break;
+
+                            case 2:
+
+                                firstDayOfWeek = DayOfWeek.Tuesday;
+                                validInput = true;
+
+                                break;
+
+                            case 3:
+
+                                firstDayOfWeek = DayOfWeek.Wednesday;
+                                validInput = true;
+
+                                break;
+
+                            case 4:
+
+                                firstDayOfWeek = DayOfWeek.Thursday;
+                                validInput = true;
+
+                                break;
+
+                            case 5:
+
+                                firstDayOfWeek = DayOfWeek.Friday;
+                                validInput = true;
+
+                                break;
+
+                            case 6:
+
+                                firstDayOfWeek = DayOfWeek.Saturday;
+                                validInput = true;
+
+                                break;
+
+                            case 7:
+
+                                firstDayOfWeek = DayOfWeek.Sunday;
+                                validInput = true;
+
+                                break;
+                        }
+                    }
+                }
+            } while (validInput == false);
+
+            SetFirstDayOfWeek(firstDayOfWeek);
 
             break;
 
@@ -390,6 +453,11 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
             daysOfWeek[i] = DayOfWeek.Sunday + counter;
             counter++;
         }
+    }
+
+    else
+    {
+        Array.Sort(daysOfWeek);
     }
 }
 
