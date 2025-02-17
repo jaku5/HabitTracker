@@ -400,27 +400,112 @@ void ShowGridBody()
                 habitCheckRow += currentWeekDay;
             }
         }
-/*         if (habit.Length > 14)
-        {
-            string[] longHabitName;
-            habit.Split()
 
-            do
+        if (habit.Length > 14)
+        {
+            string[] longHabitNameParts;
+            string longHabit = "";
+            int padLength = 0;
+
+            if (habit.Contains(' '))
             {
-                
-                longHabit = $"{habit.Remove(14)}\n{habit.Substring(14)}";
-                Console.Write(longHabit);
-                Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Substring(14).Length) + $"{streaksRow}\n");
-            } while  (longHabitName[i] > 14);
+                longHabitNameParts = habit.Split(' ');
+
+                for (int i = 0; i < longHabitNameParts.Length; i++)
+                {
+                    if (i < longHabitNameParts.Length - 2 && longHabitNameParts[i].Length + longHabitNameParts[i + 1].Length < 14)
+                    {
+                        do
+                        {
+                            longHabit += $"{string.Join(' ', longHabitNameParts[i], longHabitNameParts[i + 1])} ";
+                            i += 2;
+                        } while (i < longHabitNameParts.Length - 1 && longHabit.Length + longHabitNameParts[i + 1].Length < 14);
+
+                        if (i == longHabitNameParts.Length - 1)
+                            longHabit += $"{longHabitNameParts[i]}\n";
+                        longHabit = $"{longHabit.TrimEnd()}\n";
+                    }
+
+                    else if (i == longHabitNameParts.Length - 1 && longHabitNameParts[i].Length + longHabitNameParts[i - 1].Length < 14)
+                    {
+                        longHabit += $"{string.Join(' ', longHabitNameParts[i - 1], longHabitNameParts[i])}\n";
+                        padLength = longHabitNameParts[longHabitNameParts.Length - 1].Length;
+                    }
+
+                    else if (longHabitNameParts[i].Length > 14)
+                    {
+                        char[] longHabitName = longHabitNameParts[i].ToCharArray();
+                        string longHabitTemp = "";
+                        string longHabitPart = "";
+
+                        int counter = 0;
+                        int charCounter = 0;
+
+                        do
+                        {
+                            longHabitTemp = "";
+
+                            while (longHabitTemp.Length <= 14 && charCounter < longHabitNameParts[i].Length)
+                            {
+                                longHabitTemp += $"{longHabitName[charCounter]}";
+                                charCounter++;
+                            }
+
+                            longHabitPart += $"{longHabitTemp}\n";
+                            counter++;
+
+                        } while (longHabitPart.Length < longHabitNameParts[i].Length);
+
+                        longHabit += $"{longHabitPart}";
+
+                        if (i == longHabitNameParts.Length - 1)
+                        {
+                            padLength = longHabitTemp.Length;
+                        }
+                    }
+
+                    else
+                    {
+                        longHabit += $"{longHabitNameParts[i]}\n";
+                    }
+                }
+
+                Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+                Console.WriteLine($"{habitCheckRow}".PadLeft(72 - padLength) + $"{streaksRow}\n");
+            }
+
+            else
+            {
+                char[] longHabitName = habit.ToCharArray();
+                string longHabitTemp = "";
+                int counter = 0;
+                int charCounter = 0;
+
+                do
+                {
+                    longHabitTemp = "";
+
+                    while (longHabitTemp.Length <= 14 && charCounter < habit.Length)
+                    {
+                        longHabitTemp += $"{longHabitName[charCounter]}";
+                        charCounter++;
+                    }
+
+                    longHabit += $"{longHabitTemp}\n";
+                    counter++;
+
+                } while (longHabit.Length < habit.Length);
+
+                Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+                Console.WriteLine($"{habitCheckRow}".PadLeft(72 - longHabitTemp.Length) + $"{streaksRow}\n");
+            }
         }
 
-        else */
-        //{
+        else
+        {
             Console.Write($"{habit}");
             Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
-
-        //}
-        // @TODO: Handle long habit names.
+        }
     }
 }
 
