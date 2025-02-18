@@ -126,20 +126,25 @@ void ShowMenu()
 
             validInput = false;
 
-            // @TODO Handle invalid input.
             // @TODO Add warning and confimration before deleting data.
             // @TODO Add rename option.
-            Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.");
-            userInput = Console.ReadLine();
-
             do
             {
-                if (userInput != null)
+                Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.");
+                userInput = Console.ReadLine();
+
+                if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
                 {
                     ModifyHabitList(userInput);
+                    SaveUserData();
                     validInput = true;
                 }
 
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
+                }
             } while (validInput == false);
 
             break;
@@ -252,17 +257,22 @@ void LoadUserData()
     {
         do
         {
-            //@TODO Handle invalid input
-            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter");
+            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
 
             userInput = Console.ReadLine();
 
-            if (userInput != null && userInput != "")
+            if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
             {
                 ModifyHabitList(userInput);
                 SaveUserData();
             }
-        } while (userInput == null || userInput == "");
+
+            else
+            {
+                Console.Clear();
+                Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
+            }
+        } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
     }
 
 }
@@ -459,7 +469,12 @@ void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
 
                 else
                 {
-                    longHabit += $"\n{longHabitNameParts[i]} ";
+                    if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
+                        longHabit += $"{longHabitNameParts[i]} ";
+
+                    else
+                        longHabit += $"\n{longHabitNameParts[i]} ";
+
                     lineLength = longHabitNameParts[i].Length + 1;
                 }
             }
@@ -497,8 +512,10 @@ void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
 
         if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
             Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+
         else
             Console.Write(longHabit);
+            
         Console.WriteLine($"{habitCheckRow}".PadLeft(72 - padLength) + $"{streaksRow}\n");
     }
 
