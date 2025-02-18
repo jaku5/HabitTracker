@@ -403,42 +403,60 @@ void ShowGridBody()
 
         if (habit.Length > 14)
         {
-            string[] longHabitNameParts;
             string longHabit = "";
             int padLength = 0;
+            int lineLength = 0;
 
             if (habit.Contains(' '))
             {
-                longHabitNameParts = habit.Split(' ');
+                string[] longHabitNameParts = habit.Split(' ');
 
                 for (int i = 0; i < longHabitNameParts.Length; i++)
                 {
-                    if (i < longHabitNameParts.Length - 2 && longHabitNameParts[i].Length + longHabitNameParts[i + 1].Length < 14)
+
+                    if (i == longHabitNameParts.Length - 1 && longHabitNameParts[i].Length < 14)
                     {
-                        do
+                        if (lineLength + longHabitNameParts[i].Length < 14)
                         {
-                            longHabit += $"{string.Join(' ', longHabitNameParts[i], longHabitNameParts[i + 1])} ";
-                            i += 2;
-                        } while (i < longHabitNameParts.Length - 1 && longHabit.Length + longHabitNameParts[i + 1].Length < 14);
+                            longHabit += $"{longHabitNameParts[i]}";
+                            lineLength += longHabitNameParts[i].Length;
+                            padLength = lineLength;
+                        }
 
-                        if (i == longHabitNameParts.Length - 1)
-                            longHabit += $"{longHabitNameParts[i]}\n";
-                        longHabit = $"{longHabit.TrimEnd()}\n";
+                        else
+                        {
+                            if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
+                                longHabit += $"{longHabitNameParts[i]}";
+                            
+                            else
+                                longHabit += $"\n{longHabitNameParts[i]}";
+
+                            lineLength = longHabitNameParts[i].Length;
+                            padLength = lineLength;
+                        }
                     }
 
-                    else if (i == longHabitNameParts.Length - 1 && longHabitNameParts[i].Length + longHabitNameParts[i - 1].Length < 14)
+                    else if (longHabitNameParts[i].Length < 14)
                     {
-                        longHabit += $"{string.Join(' ', longHabitNameParts[i - 1], longHabitNameParts[i])}\n";
-                        padLength = longHabitNameParts[longHabitNameParts.Length - 1].Length;
+                        if (lineLength + longHabitNameParts[i].Length < 14)
+                        {
+                            longHabit += $"{longHabitNameParts[i]} ";
+                            lineLength += longHabitNameParts[i].Length + 1;
+                        }
+
+                        else
+                        {
+                            longHabit += $"\n{longHabitNameParts[i]} ";
+                            lineLength = longHabitNameParts[i].Length + 1;
+                        }
                     }
 
-                    else if (longHabitNameParts[i].Length > 14)
+                    else
                     {
                         char[] longHabitName = longHabitNameParts[i].ToCharArray();
                         string longHabitTemp = "";
                         string longHabitPart = "";
 
-                        int counter = 0;
                         int charCounter = 0;
 
                         do
@@ -452,25 +470,22 @@ void ShowGridBody()
                             }
 
                             longHabitPart += $"{longHabitTemp}\n";
-                            counter++;
-
                         } while (longHabitPart.Length < longHabitNameParts[i].Length);
 
-                        longHabit += $"{longHabitPart}";
+                        lineLength = longHabitPart.Length;
+                        longHabit += $"\n{longHabitPart}";
 
                         if (i == longHabitNameParts.Length - 1)
                         {
                             padLength = longHabitTemp.Length;
                         }
                     }
-
-                    else
-                    {
-                        longHabit += $"{longHabitNameParts[i]}\n";
-                    }
                 }
 
-                Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+                if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
+                    Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+                else
+                    Console.Write(longHabit);
                 Console.WriteLine($"{habitCheckRow}".PadLeft(72 - padLength) + $"{streaksRow}\n");
             }
 
@@ -478,7 +493,6 @@ void ShowGridBody()
             {
                 char[] longHabitName = habit.ToCharArray();
                 string longHabitTemp = "";
-                int counter = 0;
                 int charCounter = 0;
 
                 do
@@ -492,8 +506,6 @@ void ShowGridBody()
                     }
 
                     longHabit += $"{longHabitTemp}\n";
-                    counter++;
-
                 } while (longHabit.Length < habit.Length);
 
                 Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
