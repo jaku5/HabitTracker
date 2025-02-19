@@ -5,7 +5,7 @@ var currentDate = DateTime.Now;
 var selectedDate = currentDate;
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
-// User input helper vriables
+// User input helper variables
 string? userInput;
 bool exit = false;
 
@@ -59,39 +59,75 @@ void ShowMenu()
 
         case "2":
 
+            Console.Clear();
+
             bool validInput = false;
+
             int year = currentDate.Year;
             int month = currentDate.Month;
             int day = currentDate.Day;
 
-            // @TODO Handle invalid input
-            Console.WriteLine($"Type year and press enter(default is {year}):");
-            userInput = Console.ReadLine();
-
-            if (userInput != null)
+            do
             {
-                validInput = int.TryParse(userInput, out year);
-            }
+                Console.WriteLine($"Type year number and press enter (today is {currentDate.Year}):");
+                userInput = Console.ReadLine();
 
-            // @TODO Handle invalid input
-            Console.WriteLine($"Type month and press enter(default is {month}):");
-            userInput = Console.ReadLine();
+                if (userInput != null)
+                {
+                    validInput = int.TryParse(userInput, out year) && year > 0 && year <= currentDate.Year;
+                    if (validInput == true) break;
+                }
 
-            if (userInput != null)
+                Console.Clear();
+                Console.WriteLine($"Invalid year \"{year}\". Year must be a positive number and cannot be in the future.\n");
+
+            } while (validInput == false);
+
+            do
             {
-                validInput = int.TryParse(userInput, out month);
-            }
+                Console.WriteLine($"Type month number and press enter (today is {currentDate.Month}):");
+                userInput = Console.ReadLine();
 
-            // @TODO Handle invalid input
-            Console.WriteLine($"Type day and press enter(default is {day}):");
-            userInput = Console.ReadLine();
+                if (userInput != null)
+                {
+                    validInput = int.TryParse(userInput, out month) && month > 0 && month <= 12;
+                    if (validInput == true) break;
+                }
 
-            if (userInput != null)
+                Console.Clear();
+                Console.WriteLine($"Invalid month \"{month}\". Month must be a number between 1 and 12.\n");
+
+            } while (validInput == false);
+
+            do
             {
-                validInput = int.TryParse(userInput, out day);
-            }
+                Console.WriteLine($"Type day number and press enter (today is {currentDate.Day}):");
+                userInput = Console.ReadLine();
 
-            SetCustomDate(year, month, day);
+                if (userInput != null)
+                {
+                    validInput = int.TryParse(userInput, out day) && month > 0 && month <= 31;
+                    if (validInput == true) break;
+                }
+
+                Console.Clear();
+                Console.WriteLine($"Invalid day \"{day}\". Day must be a number between 1 and 31.\n");
+
+            } while (validInput == false);
+
+            try
+            {
+                SetCustomDate(year, month, day);
+                Console.Clear();
+                Console.WriteLine($"Selected date: {DateOnly.FromDateTime(selectedDate)}. Press enter to continue.");
+                Console.ReadLine();
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.Clear();
+                Console.WriteLine($"Selected date does not seem to be valid: \"{e.Message}\" Please try again and make sure to enter a valid date. Press enter continue.");
+                Console.ReadLine();
+            }
 
             break;
 
@@ -515,7 +551,7 @@ void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
 
         else
             Console.Write(longHabit);
-            
+
         Console.WriteLine($"{habitCheckRow}".PadLeft(72 - padLength) + $"{streaksRow}\n");
     }
 
@@ -597,7 +633,6 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
 
 void MarkHabitDone(string habitEntryID, bool habitDone = true)
 {
-    // @TODO: Handle marking future dates
     if (habitDone == false)
     {
         habitsCompleted.Remove(habitEntryID);
@@ -658,5 +693,8 @@ int CalculateRecordStreak(string habit)
 void SetCustomDate(int year, int month, int day)
 {
     DateTime customDate = new DateTime(year: year, month: month, day: day);
+    if (DateOnly.FromDateTime(customDate) > DateOnly.FromDateTime(currentDate))
+        throw new ArgumentOutOfRangeException("Selected date connot be in the future.");
+
     selectedDate = customDate;
 }
