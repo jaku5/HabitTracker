@@ -1,13 +1,15 @@
-﻿List<string> habitsToTrack = new List<string>(); //= ["Meditate", "Read", "Walk", "Code"];
-DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
-List<string> habitsCompleted = new List<string>();
-var currentDate = DateTime.Now;
-var selectedDate = currentDate;
+﻿DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
-// User input helper vriables
+List<string> habitsToTrack = new List<string>();
+List<string> habitsCompleted = new List<string>();
+
+var currentDate = DateTime.Now;
+var selectedDate = currentDate;
+
+// User input helper variables
 string? userInput;
-string menuSelection = "";
+bool validInput = false;
 bool exit = false;
 
 do
@@ -27,84 +29,123 @@ do
     {
         ShowMenu();
     }
-}
-while (exit == false);
+
+} while (exit == false);
 
 void ShowMenu()
 {
-    Console.Clear();
-    Console.WriteLine($"Select option (selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):\n");
-    Console.WriteLine("1. Show week grid for selected date.");
-    Console.WriteLine("2. Select date.");
-    Console.WriteLine("3. Mark habit as done for selected date.");
-    Console.WriteLine("4. Add or remove habit.");
-    Console.WriteLine("5. Set first day of the week");
+    string menuSelection = "";
+    validInput = false;
 
-    // @TODO Handle invalid input
-    userInput = Console.ReadLine();
-
-    if (userInput != null)
+    do
     {
-        menuSelection = userInput.ToLower();
-    }
+        Console.Clear();
+        Console.WriteLine($"Select option (selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):\n");
+        Console.WriteLine("1. Show week grid for selected date.");
+        Console.WriteLine("2. Select date.");
+        Console.WriteLine("3. Mark habit as done for selected date.");
+        Console.WriteLine("4. Add or remove habit.");
+        Console.WriteLine("5. Set first day of the week");
 
-    switch (menuSelection)
-    {
-        case "1":
+        userInput = Console.ReadLine();
 
-            ShowWeekGrid();
+        if (userInput != null)
+        {
+            menuSelection = userInput.ToLower();
+        }
 
-            break;
+        switch (menuSelection)
+        {
+            case "1":
 
-        case "2":
+                validInput = true;
 
-            bool validInput = false;
-            int year = currentDate.Year;
-            int month = currentDate.Month;
-            int day = currentDate.Day;
+                ShowWeekGrid();
 
-            // @TODO Handle invalid input
-            Console.WriteLine($"Type year and press enter(default is {year}):");
-            userInput = Console.ReadLine();
+                break;
 
-            if (userInput != null)
-            {
-                validInput = int.TryParse(userInput, out year);
-            }
+            case "2":
 
-            // @TODO Handle invalid input
-            Console.WriteLine($"Type month and press enter(default is {month}):");
-            userInput = Console.ReadLine();
+                Console.Clear();
 
-            if (userInput != null)
-            {
-                validInput = int.TryParse(userInput, out month);
-            }
+                validInput = false;
 
-            // @TODO Handle invalid input
-            Console.WriteLine($"Type day and press enter(default is {day}):");
-            userInput = Console.ReadLine();
+                int year = currentDate.Year;
+                int month = currentDate.Month;
+                int day = currentDate.Day;
 
-            if (userInput != null)
-            {
-                validInput = int.TryParse(userInput, out day);
-            }
+                do
+                {
+                    Console.WriteLine($"Type year number and press enter (today is {currentDate.Year}):");
+                    userInput = Console.ReadLine();
 
-            SetCustomDate(year, month, day);
+                    if (userInput != null)
+                    {
+                        validInput = int.TryParse(userInput, out year) && year > 0 && year <= currentDate.Year;
+                        if (validInput == true) break;
+                    }
 
-            break;
+                    Console.Clear();
+                    Console.WriteLine($"Invalid year \"{year}\". Year must be a positive number and cannot be in the future.\n");
 
-        case "3":
+                } while (validInput == false);
 
-            validInput = false;
+                do
+                {
+                    Console.WriteLine($"Type month number and press enter (today is {currentDate.Month}):");
+                    userInput = Console.ReadLine();
 
-            // @TODO Handle invalid input
-            // @TODO Add suport for unmark option
-            Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
-            userInput = Console.ReadLine();
+                    if (userInput != null)
+                    {
+                        validInput = int.TryParse(userInput, out month) && month > 0 && month <= 12;
+                        if (validInput == true) break;
+                    }
 
-            do
-            {
+                    Console.Clear();
+                    Console.WriteLine($"Invalid month \"{month}\". Month must be a number between 1 and 12.\n");
+
+                } while (validInput == false);
+
+                do
+                {
+                    Console.WriteLine($"Type day number and press enter (today is {currentDate.Day}):");
+                    userInput = Console.ReadLine();
+
+                    if (userInput != null)
+                    {
+                        validInput = int.TryParse(userInput, out day) && month > 0 && month <= 31;
+                        if (validInput == true) break;
+                    }
+
+                    Console.Clear();
+                    Console.WriteLine($"Invalid day \"{day}\". Day must be a number between 1 and 31.\n");
+
+                } while (validInput == false);
+
+                try
+                {
+                    SetCustomDate(year, month, day);
+                    Console.Clear();
+                    Console.WriteLine($"Selected date: {DateOnly.FromDateTime(selectedDate)}. Press enter to continue.");
+                    Console.ReadLine();
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Selected date does not seem to be valid: \"{e.Message}\" Please try again and make sure to enter a valid date. Press enter continue.");
+                    Console.ReadLine();
+                }
+
+                break;
+
+            case "3":
+
+                validInput = false;
+
+                // @TODO Add suport for unmark option
+                Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+                userInput = Console.ReadLine();
+
                 if (userInput != null && habitsToTrack.Contains(userInput))
                 {
                     string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate);
@@ -114,123 +155,128 @@ void ShowMenu()
 
                 else
                 {
-                    Console.WriteLine("Habit not on the list. Please enter a valid habit name or add a new habit to the list.");
+                    Console.Clear();
+                    Console.WriteLine($"Habit \"{userInput}\" is not on the list. Please enter a valid habit name or add a new habit to the list. Press enter continue.\n");
                     userInput = Console.ReadLine();
                 }
-            } while (validInput == false);
 
-            break;
+                break;
 
-        case "4":
+            case "4":
 
-            validInput = false;
+                validInput = false;
 
-            // @TODO Handle invalid input.
-            // @TODO Add warning and confimration before deleting data.
-            // @TODO Add rename option.
-            Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.");
-            userInput = Console.ReadLine();
+                // @TODO Add warning and confimration before deleting data.
+                // @TODO Add rename option.
 
-            do
-            {
-                if (userInput != null)
+                Console.Clear();
+                Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
+                userInput = Console.ReadLine();
+
+                if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
                 {
                     ModifyHabitList(userInput);
+                    SaveUserData();
                     validInput = true;
                 }
 
-            } while (validInput == false);
-
-            break;
-
-        case "5":
-
-            validInput = false;
-            int selectedFirstDay = 0;
-
-            // @TODO Handle invalid input.
-
-            Console.WriteLine($"Set first day of the week for the week grid:\n\n1. Monday\n2. Tuesday\n3. Wednesday\n4. Thursday\n5. Friday\n6. Saturday\n7. Sunday");
-            userInput = Console.ReadLine();
-
-            do
-            {
-                if (int.TryParse(userInput, out selectedFirstDay))
+                else
                 {
+                    Console.Clear();
+                    Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
+                    userInput = Console.ReadLine();
+                }
 
+                break;
+
+            case "5":
+
+                validInput = false;
+                int selectedFirstDay = 0;
+
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Set first day of the week for the week grid:\n\n1. Monday\n2. Tuesday\n3. Wednesday\n4. Thursday\n5. Friday\n6. Saturday\n7. Sunday");
+                    userInput = Console.ReadLine();
+
+                    if (int.TryParse(userInput, out selectedFirstDay))
                     {
-                        switch (selectedFirstDay)
+
                         {
-                            case 1:
+                            switch (selectedFirstDay)
+                            {
+                                case 1:
 
-                                firstDayOfWeek = DayOfWeek.Monday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Monday;
+                                    validInput = true;
 
-                                break;
+                                    break;
 
-                            case 2:
+                                case 2:
 
-                                firstDayOfWeek = DayOfWeek.Tuesday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Tuesday;
+                                    validInput = true;
 
-                                break;
+                                    break;
 
-                            case 3:
+                                case 3:
 
-                                firstDayOfWeek = DayOfWeek.Wednesday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Wednesday;
+                                    validInput = true;
 
-                                break;
+                                    break;
 
-                            case 4:
+                                case 4:
 
-                                firstDayOfWeek = DayOfWeek.Thursday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Thursday;
+                                    validInput = true;
 
-                                break;
+                                    break;
 
-                            case 5:
+                                case 5:
 
-                                firstDayOfWeek = DayOfWeek.Friday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Friday;
+                                    validInput = true;
 
-                                break;
+                                    break;
 
-                            case 6:
+                                case 6:
 
-                                firstDayOfWeek = DayOfWeek.Saturday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Saturday;
+                                    validInput = true;
 
-                                break;
+                                    break;
 
-                            case 7:
+                                case 7:
 
-                                firstDayOfWeek = DayOfWeek.Sunday;
-                                validInput = true;
+                                    firstDayOfWeek = DayOfWeek.Sunday;
+                                    validInput = true;
 
-                                break;
+                                    break;
+                            }
                         }
                     }
-                }
-            } while (validInput == false);
 
-            SetFirstDayOfWeek(firstDayOfWeek);
+                } while (validInput == false);
 
-            break;
+                SetFirstDayOfWeek(firstDayOfWeek);
 
-        default:
+                Console.Clear();
+                Console.WriteLine($"Selected first day of the week: {firstDayOfWeek}. Press Enter to continue.");
+                Console.ReadLine();
 
-            ShowWeekGrid();
+                break;
+        }
 
-            break;
-    }
+    } while (validInput == false);
 }
 
 void LoadUserData()
 {
     if (File.Exists("./habit_data.txt"))
     {
-        //@ TODO Handle empty data file
+        //@TODO Handle empty data file
         string habits = "";
         string habitsCompletedID = "";
         StreamReader sr = new StreamReader("./habit_data.txt");
@@ -251,17 +297,22 @@ void LoadUserData()
     {
         do
         {
-            //@TODO Handle invalid input
-            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter");
+            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
 
             userInput = Console.ReadLine();
 
-            if (userInput != null && userInput != "")
+            if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
             {
-                habitsToTrack.Add(userInput);
+                ModifyHabitList(userInput);
                 SaveUserData();
             }
-        } while (userInput == null || userInput == "");
+
+            else
+            {
+                Console.Clear();
+                Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
+            }
+        } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
     }
 
 }
@@ -372,19 +423,17 @@ void ShowGridBody()
             string checkIcon = "- [x] ";
             string uncheckIcon = "- [ ] ";
             string icon = uncheckIcon;
-            bool habitDone = false;
             habitEntryID = $"{habit}{habitDate}";
 
             if (habitsCompleted.Contains(habitEntryID))
             {
-                habitDone = true;
                 icon = checkIcon;
             }
 
             if (i == 0)
             {
                 currentWeekDay = icon;
-                habitCheckRow += currentWeekDay; // + habitDate;
+                habitCheckRow += currentWeekDay;
             }
 
             else if (i == daysOfWeek.Length - 1)
@@ -401,18 +450,143 @@ void ShowGridBody()
                 habitCheckRow += currentWeekDay;
             }
         }
-        Console.Write($"{habit}");
-        // @TODO: Handle long habit names.
-        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
+
+        if (habit.Length > 14)
+        {
+            FormatLongHabitName(habit, habitCheckRow, streaksRow);
+        }
+
+        else
+        {
+            Console.Write($"{habit}");
+            Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
+        }
+    }
+}
+
+void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
+{
+    string longHabit = "";
+    int padLength = 0;
+    int lineLength = 0;
+
+    if (habit.Contains(' '))
+    {
+        string[] longHabitNameParts = habit.Split(' ');
+
+        for (int i = 0; i < longHabitNameParts.Length; i++)
+        {
+
+            if (i == longHabitNameParts.Length - 1 && longHabitNameParts[i].Length < 14)
+            {
+                if (lineLength + longHabitNameParts[i].Length < 14)
+                {
+                    longHabit += $"{longHabitNameParts[i]}";
+                    lineLength += longHabitNameParts[i].Length;
+                    padLength = lineLength;
+                }
+
+                else
+                {
+                    if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
+                        longHabit += $"{longHabitNameParts[i]}";
+
+                    else
+                        longHabit += $"\n{longHabitNameParts[i]}";
+
+                    lineLength = longHabitNameParts[i].Length;
+                    padLength = lineLength;
+                }
+            }
+
+            else if (longHabitNameParts[i].Length < 14)
+            {
+                if (lineLength + longHabitNameParts[i].Length < 14)
+                {
+                    longHabit += $"{longHabitNameParts[i]} ";
+                    lineLength += longHabitNameParts[i].Length + 1;
+                }
+
+                else
+                {
+                    if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
+                        longHabit += $"{longHabitNameParts[i]} ";
+
+                    else
+                        longHabit += $"\n{longHabitNameParts[i]} ";
+
+                    lineLength = longHabitNameParts[i].Length + 1;
+                }
+            }
+
+            else
+            {
+                char[] longHabitName = longHabitNameParts[i].ToCharArray();
+                string longHabitTemp = "";
+                string longHabitPart = "";
+
+                int charCounter = 0;
+
+                do
+                {
+                    longHabitTemp = "";
+
+                    while (longHabitTemp.Length <= 14 && charCounter < longHabitNameParts[i].Length)
+                    {
+                        longHabitTemp += $"{longHabitName[charCounter]}";
+                        charCounter++;
+                    }
+
+                    longHabitPart += $"{longHabitTemp}\n";
+                } while (longHabitPart.Length < longHabitNameParts[i].Length);
+
+                lineLength = longHabitPart.Length;
+                longHabit += $"\n{longHabitPart}";
+
+                if (i == longHabitNameParts.Length - 1)
+                {
+                    padLength = longHabitTemp.Length;
+                }
+            }
+        }
+
+        if (longHabit.LastIndexOf('\n') == longHabit.Length - 1)
+            Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+
+        else
+            Console.Write(longHabit);
+
+        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - padLength) + $"{streaksRow}\n");
+    }
+
+    else
+    {
+        char[] longHabitName = habit.ToCharArray();
+        string longHabitTemp = "";
+        int charCounter = 0;
+
+        do
+        {
+            longHabitTemp = "";
+
+            while (longHabitTemp.Length <= 14 && charCounter < habit.Length)
+            {
+                longHabitTemp += $"{longHabitName[charCounter]}";
+                charCounter++;
+            }
+
+            longHabit += $"{longHabitTemp}\n";
+        } while (longHabit.Length < habit.Length);
+
+        Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
+        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - longHabitTemp.Length) + $"{streaksRow}\n");
     }
 }
 
 DateOnly CalculateGridDates(string habit, int weekDay)
 {
-
     DateOnly habitGridEntryDate = new DateOnly();
     int dateDaysDifference = 0;
-
 
     if (daysOfWeek[weekDay] == selectedDate.DayOfWeek)
     {
@@ -463,7 +637,6 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
 
 void MarkHabitDone(string habitEntryID, bool habitDone = true)
 {
-    // @TODO: Handle marking future dates
     if (habitDone == false)
     {
         habitsCompleted.Remove(habitEntryID);
@@ -498,13 +671,14 @@ int CalculateRecordStreak(string habit)
     foreach (string habitCompletedID in habitsCompleted)
     {
         DateOnly currentHabitDate;
-        DateOnly.TryParse(habitCompletedID.Substring(habit.Length), out currentHabitDate);
-        string currentHabitID = $"{habit}{currentHabitDate}";
 
         int tempRecordStreak = 0;
 
         if (habitCompletedID.ToString().Contains(habit))
         {
+            DateOnly.TryParse(habitCompletedID.Substring(habit.Length), out currentHabitDate);
+            string currentHabitID = $"{habit}{currentHabitDate}";
+
             while (habitsCompleted.Contains(currentHabitID))
             {
                 currentHabitDate = currentHabitDate.AddDays(-1);
@@ -523,5 +697,9 @@ int CalculateRecordStreak(string habit)
 void SetCustomDate(int year, int month, int day)
 {
     DateTime customDate = new DateTime(year: year, month: month, day: day);
+
+    if (DateOnly.FromDateTime(customDate) > DateOnly.FromDateTime(currentDate))
+        throw new ArgumentOutOfRangeException("Selected date connot be in the future.");
+
     selectedDate = customDate;
 }
