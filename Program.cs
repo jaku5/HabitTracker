@@ -295,7 +295,36 @@ void LoadUserData()
 
         habits = sr.ReadLine();
         habitsCompletedID = sr.ReadLine();
-        habitsToTrack = habits.Replace(", ", ",").Split(',').ToList();
+
+        if (habits != "" && habits != null)
+        {
+            habitsToTrack = habits.Replace(", ", ",").Split(',').ToList();
+        }
+
+        else
+        {
+            sr.Close();
+            
+            do
+            {
+                Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
+
+                userInput = Console.ReadLine();
+
+                if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
+                {
+                    ModifyHabitList(userInput);
+                    SaveUserData();
+                }
+
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
+                }
+
+            } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
+        }
 
         if (habitsCompletedID != "" && habitsCompletedID != null)
         {
@@ -324,9 +353,9 @@ void LoadUserData()
                 Console.Clear();
                 Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
             }
+
         } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
     }
-
 }
 
 void SaveUserData()
@@ -334,9 +363,9 @@ void SaveUserData()
     string userData = "";
     string habitList = "";
     string habitCompletedList = "";
+
     StreamWriter sw = new StreamWriter("./habit_data.txt");
 
-    // @TODO Handle empty habit array
     if (habitsToTrack.Count > 0)
     {
         foreach (string habit in habitsToTrack)
@@ -362,6 +391,12 @@ void SaveUserData()
         sw.WriteLine(userData);
         sw.Close();
     }
+
+    else
+    {
+        sw.WriteLine(userData);
+        sw.Close();
+    }
 }
 
 void ModifyHabitList(string habit)
@@ -378,7 +413,13 @@ void ModifyHabitList(string habit)
             }
         }
 
-        habitsToTrack.Remove(habit);
+        if (habitsToTrack.Count > 1)
+            habitsToTrack.Remove(habit);
+        
+        else
+            habitsToTrack.Remove(habit);
+            SaveUserData();
+            LoadUserData();
     }
 
     else
