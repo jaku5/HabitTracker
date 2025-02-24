@@ -1,4 +1,4 @@
-DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+﻿DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 List<string> habitsToTrack = new List<string>();
@@ -373,6 +373,8 @@ void ModifyHabitList(string habit)
             while (habitsCompleted.Count > 0 && habitsCompleted[i].ToString().Contains(habit))
             {
                 MarkHabitDone(habitsCompleted[i], false);
+
+                if (i > habitsCompleted.Count - 1) break;
             }
         }
 
