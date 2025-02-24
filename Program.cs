@@ -370,7 +370,7 @@ void ModifyHabitList(string habit)
     {
         for (int i = 0; i < habitsCompleted.Count; i++)
         {
-            while (habitsCompleted.Count > 0 && habitsCompleted[i].ToString().Contains(habit))
+            while (habitsCompleted.Count > 0 && habitsCompleted[i].ToString().Substring(0, habit.Length).Equals(habit))
             {
                 MarkHabitDone(habitsCompleted[i], false);
 
