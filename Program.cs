@@ -1,4 +1,4 @@
-﻿DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 List<string> habitsToTrack = new List<string>();
@@ -81,12 +81,12 @@ void ShowMenu()
 
                     if (userInput != null)
                     {
-                        validInput = int.TryParse(userInput, out year) && year > 0 && year <= currentDate.Year;
+                        validInput = int.TryParse(userInput, out year) && year > 0 && year <= 9999;
                         if (validInput == true) break;
                     }
 
                     Console.Clear();
-                    Console.WriteLine($"Invalid year \"{year}\". Year must be a positive number and cannot be in the future.\n");
+                    Console.WriteLine($"Invalid year \"{year}\". Year must be a number between 1 and 9999.\n");
 
                 } while (validInput == false);
 
@@ -142,22 +142,34 @@ void ShowMenu()
 
                 validInput = false;
 
+                Console.Clear();
                 // @TODO Add suport for unmark option
-                Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
-                userInput = Console.ReadLine();
-
-                if (userInput != null && habitsToTrack.Contains(userInput))
+                if (DateOnly.FromDateTime(selectedDate) > DateOnly.FromDateTime(currentDate))
                 {
-                    string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate);
-                    MarkHabitDone(habitsCompletedID);
-                    validInput = true;
+                    Console.Clear();
+                    Console.WriteLine($"Selected date {selectedDate} is in the future. Please try again with a valid date. Press enter to continue.");
+                    Console.ReadLine();
                 }
 
                 else
                 {
-                    Console.Clear();
-                    Console.WriteLine($"Habit \"{userInput}\" is not on the list. Please enter a valid habit name or add a new habit to the list. Press enter continue.\n");
+                    Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is ({selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+
                     userInput = Console.ReadLine();
+
+                    if (userInput != null && habitsToTrack.Contains(userInput))
+                    {
+                        string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate);
+                        MarkHabitDone(habitsCompletedID);
+                        validInput = true;
+                    }
+
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Habit \"{userInput}\" is not on the list. Please enter a valid habit name or add a new habit to the list. Press enter continue.\n");
+                        userInput = Console.ReadLine();
+                    }
                 }
 
                 break;
@@ -638,9 +650,8 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
 void MarkHabitDone(string habitEntryID, bool habitDone = true)
 {
     if (habitDone == false)
-    {
         habitsCompleted.Remove(habitEntryID);
-    }
+
     else
         habitsCompleted.Add(habitEntryID);
 
@@ -697,9 +708,6 @@ int CalculateRecordStreak(string habit)
 void SetCustomDate(int year, int month, int day)
 {
     DateTime customDate = new DateTime(year: year, month: month, day: day);
-
-    if (DateOnly.FromDateTime(customDate) > DateOnly.FromDateTime(currentDate))
-        throw new ArgumentOutOfRangeException("Selected date connot be in the future.");
 
     selectedDate = customDate;
 }
