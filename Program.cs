@@ -514,7 +514,7 @@ void ShowGridBody()
         else
         {
             Console.Write($"{habit}");
-            Console.WriteLine($"{habitCheckRow}".PadLeft(72 - habit.Length) + $"{streaksRow}\n");
+            Console.WriteLine($"\t\t{habitCheckRow}" + $"{streaksRow}\n");
         }
     }
 }
