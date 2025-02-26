@@ -304,7 +304,7 @@ void LoadUserData()
         else
         {
             sr.Close();
-            
+
             do
             {
                 Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
@@ -414,12 +414,16 @@ void ModifyHabitList(string habit)
         }
 
         if (habitsToTrack.Count > 1)
+        {
             habitsToTrack.Remove(habit);
-        
+        }
+
         else
+        {
             habitsToTrack.Remove(habit);
             SaveUserData();
             LoadUserData();
+        }
     }
 
     else
@@ -514,7 +518,7 @@ void ShowGridBody()
         else
         {
             Console.Write($"{habit}");
-            Console.WriteLine($"\t\t{habitCheckRow}" + $"{streaksRow}\n");
+            Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (16 - habit.Length)) + $"{streaksRow}\n");
         }
     }
 }
@@ -593,6 +597,7 @@ void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
                     }
 
                     longHabitPart += $"{longHabitTemp}\n";
+
                 } while (longHabitPart.Length < longHabitNameParts[i].Length);
 
                 lineLength = longHabitPart.Length;
@@ -611,7 +616,7 @@ void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
         else
             Console.Write(longHabit);
 
-        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - padLength) + $"{streaksRow}\n");
+        Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (16 - padLength)) + $"{streaksRow}\n");
     }
 
     else
@@ -634,7 +639,7 @@ void FormatLongHabitName(string habit, string habitCheckRow, string streaksRow)
         } while (longHabit.Length < habit.Length);
 
         Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
-        Console.WriteLine($"{habitCheckRow}".PadLeft(72 - longHabitTemp.Length) + $"{streaksRow}\n");
+        Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (16 - longHabitTemp.Length)) + $"{streaksRow}\n");
     }
 }
 
