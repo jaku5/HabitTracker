@@ -159,7 +159,7 @@ void ShowMenu()
 
                     if (userInput != null && habitsToTrack.Contains(userInput))
                     {
-                        string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate);
+                        string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate).ToString("yyyy-MM-dd");
                         MarkHabitDone(habitsCompletedID);
                         validInput = true;
                     }
@@ -482,7 +482,7 @@ void ShowGridBody()
             string checkIcon = "- [x] ";
             string uncheckIcon = "- [ ] ";
             string icon = uncheckIcon;
-            habitEntryID = $"{habit}{habitDate}";
+            habitEntryID = $"{habit}{habitDate.ToString("yyyy-MM-dd")}";
 
             if (habitsCompleted.Contains(habitEntryID))
             {
@@ -711,12 +711,12 @@ int CalculateCurrentStreak(string habit)
 {
     int currentStreak = 0;
     DateOnly currentHabitDate = DateOnly.FromDateTime(currentDate);
-    string currentHabitID = $"{habit}{currentHabitDate}";
+    string currentHabitID = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
 
     while (habitsCompleted.Contains(currentHabitID))
     {
         currentHabitDate = currentHabitDate.AddDays(-1);
-        currentHabitID = habit + currentHabitDate;
+        currentHabitID = habit + currentHabitDate.ToString("yyyy-MM-dd");
         currentStreak++;
     }
 
@@ -736,12 +736,12 @@ int CalculateRecordStreak(string habit)
         if (habitCompletedID.ToString().Contains(habit))
         {
             DateOnly.TryParse(habitCompletedID.Substring(habit.Length), out currentHabitDate);
-            string currentHabitID = $"{habit}{currentHabitDate}";
+            string currentHabitID = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
 
             while (habitsCompleted.Contains(currentHabitID))
             {
                 currentHabitDate = currentHabitDate.AddDays(-1);
-                currentHabitID = habit + currentHabitDate;
+                currentHabitID = habit + currentHabitDate.ToString("yyyy-MM-dd");
                 tempRecordStreak++;
             }
 
