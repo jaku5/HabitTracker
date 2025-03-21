@@ -143,7 +143,7 @@ void ShowMenu()
                 validInput = false;
 
                 Console.Clear();
-                // @TODO Add suport for unmark option
+
                 if (DateOnly.FromDateTime(selectedDate) > DateOnly.FromDateTime(currentDate))
                 {
                     Console.Clear();
@@ -153,13 +153,19 @@ void ShowMenu()
 
                 else
                 {
-                    Console.WriteLine($"Type habit name you want to mark and press enter. Selected date is ({selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+                    for (int i = 0; i < habitsToTrack.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {habitsToTrack[i]}");
+                    }
 
+                    Console.WriteLine($"\nEnter the number corresponding to the habit (selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
                     userInput = Console.ReadLine();
 
-                    if (userInput != null && habitsToTrack.Contains(userInput))
+                    if (int.TryParse(userInput, out int habitIndex) && habitIndex > 0 && habitIndex <= habitsToTrack.Count)
                     {
-                        string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate).ToString("yyyy-MM-dd");
+                        string selectedHabit = habitsToTrack[habitIndex - 1];
+                        string habitsCompletedID = selectedHabit + DateOnly.FromDateTime(selectedDate).ToString("yyyy-MM-dd");
+
                         MarkHabitDone(habitsCompletedID);
                         validInput = true;
                     }
@@ -167,8 +173,8 @@ void ShowMenu()
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine($"Habit \"{userInput}\" is not on the list. Please enter a valid habit name or add a new habit to the list. Press enter continue.\n");
-                        userInput = Console.ReadLine();
+                        Console.WriteLine("Invalid selection. Please enter a valid number corresponding to a habit. Press enter to continue.");
+                        Console.ReadLine();
                     }
                 }
 
