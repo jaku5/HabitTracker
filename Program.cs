@@ -153,7 +153,7 @@ void ShowMenu()
 
                 else
                 {
-                    Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is ({selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+                    Console.WriteLine($"Type habit name you want to mark and press enter. Selected date is ({selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
 
                     userInput = Console.ReadLine();
 
@@ -407,7 +407,7 @@ void ModifyHabitList(string habit)
         {
             while (habitsCompleted.Count > 0 && habitsCompleted[i].ToString().Substring(0, habit.Length).Equals(habit))
             {
-                MarkHabitDone(habitsCompleted[i], false);
+                MarkHabitDone(habitsCompleted[i]);
 
                 if (i > habitsCompleted.Count - 1) break;
             }
@@ -695,9 +695,9 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
     }
 }
 
-void MarkHabitDone(string habitEntryID, bool habitDone = true)
+void MarkHabitDone(string habitEntryID)
 {
-    if (habitDone == false)
+    if (habitsCompleted.Contains(habitEntryID))
         habitsCompleted.Remove(habitEntryID);
 
     else
