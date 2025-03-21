@@ -500,7 +500,10 @@ void ShowGridBody()
                 currentWeekDay = $"{icon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
                 habitCheckRow += currentWeekDay;
 
-                streaksRow = $"{currentStreak}".ToString().PadLeft(daysOfWeek[i].ToString().Length - 3 + (currentStreak.ToString().Length - 1)) + $"{recordStreak}".ToString().PadLeft(8 + recordStreak.ToString().Length - currentStreak.ToString().Length);
+                int currentStreakPadding = daysOfWeek[i].ToString().Length + currentStreak.ToString().Length - 4;
+                int recordStreakPadding = 8 + recordStreak.ToString().Length - currentStreak.ToString().Length;
+
+                streaksRow = currentStreak.ToString().PadLeft(currentStreakPadding) + recordStreak.ToString().PadLeft(recordStreakPadding);
             }
 
             else
