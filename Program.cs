@@ -713,6 +713,8 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
     {
         Array.Sort(daysOfWeek);
     }
+
+    SaveUserData();
 }
 
 void MarkHabitDone(string habitEntryID)
