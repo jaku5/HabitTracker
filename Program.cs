@@ -1,4 +1,6 @@
-﻿DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
+﻿using System.Text.Json;
+
+DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
 
 List<string> habitsToTrack = new List<string>();
@@ -286,117 +288,57 @@ void ShowMenu()
 
 void LoadUserData()
 {
-    if (File.Exists("./habit_data.txt"))
+    if (File.Exists("./habit_data.json"))
     {
-        //@TODO Handle empty data file
-        string habits = "";
-        string habitsCompletedID = "";
-        StreamReader sr = new StreamReader("./habit_data.txt");
+        string jsonData = File.ReadAllText("./habit_data.json");
+        var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
-        habits = sr.ReadLine();
-        habitsCompletedID = sr.ReadLine();
-
-        if (habits != "" && habits != null)
+        if (userData != null)
         {
-            habitsToTrack = habits.Replace(", ", ",").Split(',').ToList();
+            habitsToTrack = userData.HabitsToTrack ?? new List<string>();
+            habitsCompleted = userData.HabitsCompleted ?? new List<string>();
+            firstDayOfWeek = userData.FirstDayOfWeek ?? DayOfWeek.Monday;
         }
-
-        else
-        {
-            sr.Close();
-
-            do
-            {
-                Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
-
-                userInput = Console.ReadLine();
-
-                if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
-                {
-                    ModifyHabitList(userInput);
-                    SaveUserData();
-                }
-
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
-                }
-
-            } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
-        }
-
-        if (habitsCompletedID != "" && habitsCompletedID != null)
-        {
-            habitsCompleted = habitsCompletedID.Replace(", ", ",").Split(',').ToList();
-        }
-
-        sr.Close();
     }
-
     else
     {
-        do
-        {
-            Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
-
-            userInput = Console.ReadLine();
-
-            if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
-            {
-                ModifyHabitList(userInput);
-                SaveUserData();
-            }
-
-            else
-            {
-                Console.Clear();
-                Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
-            }
-
-        } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
+        InitializeUserData();
     }
 }
 
 void SaveUserData()
 {
-    string userData = "";
-    string habitList = "";
-    string habitCompletedList = "";
-
-    StreamWriter sw = new StreamWriter("./habit_data.txt");
-
-    if (habitsToTrack.Count > 0)
+    var userData = new UserData
     {
-        foreach (string habit in habitsToTrack)
+        HabitsToTrack = habitsToTrack,
+        HabitsCompleted = habitsCompleted,
+        FirstDayOfWeek = firstDayOfWeek
+    };
+
+    string jsonData = JsonSerializer.Serialize(userData, new JsonSerializerOptions { WriteIndented = true });
+    File.WriteAllText("./habit_data.json", jsonData);
+}
+
+void InitializeUserData()
+{
+    do
+    {
+        Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
+
+        userInput = Console.ReadLine();
+
+        if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
         {
-            habitList += $"{habit}, ";
+            ModifyHabitList(userInput);
+            SaveUserData();
         }
-
-        if (habitsCompleted.Count > 0)
-        {
-            foreach (string habitCompletedID in habitsCompleted)
-            {
-                habitCompletedList += $"{habitCompletedID}, ";
-            }
-
-            userData = $"{habitList.Remove(habitList.Length - 2)}\n{habitCompletedList.Remove(habitCompletedList.Length - 2)}";
-        }
-
         else
         {
-            userData = $"{habitList.Remove(habitList.Length - 2)}";
+            Console.Clear();
+            Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
         }
 
-        sw.WriteLine(userData);
-        sw.Close();
-    }
-
-    else
-    {
-        sw.WriteLine(userData);
-        sw.Close();
-    }
+    } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
 }
 
 void ModifyHabitList(string habit)
@@ -758,4 +700,12 @@ void SetCustomDate(int year, int month, int day)
     DateTime customDate = new DateTime(year: year, month: month, day: day);
 
     selectedDate = customDate;
+}
+
+// Define a class to represent user data
+class UserData
+{
+    public List<string>? HabitsToTrack { get; set; }
+    public List<string>? HabitsCompleted { get; set; }
+    public DayOfWeek? FirstDayOfWeek { get; set; }
 }
