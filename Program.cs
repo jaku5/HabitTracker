@@ -45,7 +45,8 @@ void ShowMenu()
         Console.WriteLine("2. Select date.");
         Console.WriteLine("3. Mark habit as done for selected date.");
         Console.WriteLine("4. Add or remove habit.");
-        Console.WriteLine("5. Set first day of the week");
+        Console.WriteLine("5. Rename an existing habit.");
+        Console.WriteLine("6. Set first day of the week");
 
         userInput = Console.ReadLine();
 
@@ -208,6 +209,51 @@ void ShowMenu()
                 break;
 
             case "5":
+                validInput = false;
+                Console.Clear();
+
+                if (habitsToTrack.Count == 0)
+                {
+                    Console.WriteLine("No habits to rename. Please add a habit first. Press enter to continue.");
+                    Console.ReadLine();
+                    break;
+                }
+
+                Console.WriteLine("Select the habit you want to rename:");
+                for (int i = 0; i < habitsToTrack.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {habitsToTrack[i]}");
+                }
+
+                userInput = Console.ReadLine();
+
+                if (int.TryParse(userInput, out int renameIndex) && renameIndex > 0 && renameIndex <= habitsToTrack.Count)
+                {
+                    string oldHabitName = habitsToTrack[renameIndex - 1];
+                    Console.WriteLine($"Enter the new name for the habit \"{oldHabitName}\":");
+                    string? newHabitName = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(newHabitName) && !newHabitName.Contains(','))
+                    {
+                        RenameHabit(oldHabitName, newHabitName);
+                        Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid habit name. Name cannot be empty or contain a comma. Press enter to continue.");
+                        Console.ReadLine();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Press enter to continue.");
+                    Console.ReadLine();
+                }
+
+                break;
+
+            case "6":
 
                 validInput = false;
                 int selectedFirstDay = 0;
@@ -439,6 +485,29 @@ void ModifyHabitList(string habit)
 
     SaveUserData();
     ShowWeekGrid();
+}
+
+void RenameHabit(string oldHabitName, string newHabitName)
+{
+    // Update the habit name in the habitsToTrack list
+    int habitIndex = habitsToTrack.IndexOf(oldHabitName);
+    if (habitIndex != -1)
+    {
+        habitsToTrack[habitIndex] = newHabitName;
+    }
+
+    // Update the habit name in the habitsCompleted list
+    for (int i = 0; i < habitsCompleted.Count; i++)
+    {
+        if (habitsCompleted[i].StartsWith(oldHabitName))
+        {
+            string datePart = habitsCompleted[i].Substring(oldHabitName.Length);
+            habitsCompleted[i] = newHabitName + datePart;
+        }
+    }
+
+    // Save the updated data
+    SaveUserData();
 }
 
 void ShowWeekGrid()
