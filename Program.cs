@@ -187,7 +187,7 @@ void ShowMenu()
 
                 validInput = false;
 
-                // @TODO Add warning and confimration before deleting data.s
+                // @TODO Add warning and confimration before deleting data
                 Console.Clear();
                 Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
                 userInput = Console.ReadLine();
@@ -212,6 +212,7 @@ void ShowMenu()
                 validInput = false;
                 Console.Clear();
 
+                // @TODO Verify if this is necessery
                 if (habitsToTrack.Count == 0)
                 {
                     Console.WriteLine("No habits to rename. Please add a habit first. Press enter to continue.");
@@ -345,13 +346,19 @@ void LoadUserData()
         string jsonData = File.ReadAllText("./habit_data.json");
         var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
-        if (userData != null)
+        if (userData != null && userData.HabitsToTrack.Count > 0)
         {
             habitsToTrack = userData.HabitsToTrack ?? new List<string>();
             habitsCompleted = userData.HabitsCompleted ?? new List<string>();
             firstDayOfWeek = userData.FirstDayOfWeek ?? DayOfWeek.Monday;
         }
+
+        else
+        {
+            InitializeUserData();
+        }
     }
+
     else
     {
         InitializeUserData();
@@ -710,6 +717,8 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
     {
         Array.Sort(daysOfWeek);
     }
+
+    SaveUserData();
 }
 
 void MarkHabitDone(string habitEntryID)
@@ -777,7 +786,6 @@ void SetCustomDate(int year, int month, int day)
     selectedDate = customDate;
 }
 
-// Define a class to represent user data
 class UserData
 {
     public List<string>? HabitsToTrack { get; set; }
