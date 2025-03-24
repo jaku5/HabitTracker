@@ -47,7 +47,8 @@ void ShowMenu()
         Console.WriteLine("2. Select date.");
         Console.WriteLine("3. Mark habit as done for selected date.");
         Console.WriteLine("4. Add or remove habit.");
-        Console.WriteLine("5. Set first day of the week");
+        Console.WriteLine("5. Rename an existing habit.");
+        Console.WriteLine("6. Set first day of the week");
 
         userInput = Console.ReadLine();
 
@@ -145,7 +146,7 @@ void ShowMenu()
                 validInput = false;
 
                 Console.Clear();
-                // @TODO Add suport for unmark option
+
                 if (DateOnly.FromDateTime(selectedDate) > DateOnly.FromDateTime(currentDate))
                 {
                     Console.Clear();
@@ -155,13 +156,19 @@ void ShowMenu()
 
                 else
                 {
-                    Console.WriteLine($"Type habit name you want to mark and press enter. Use \"false\" options to unmark habit done status. Selected date is ({selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
+                    for (int i = 0; i < habitsToTrack.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {habitsToTrack[i]}");
+                    }
 
+                    Console.WriteLine($"\nEnter the number corresponding to the habit (selected date is {selectedDate.DayOfWeek} {DateOnly.FromDateTime(selectedDate)}):");
                     userInput = Console.ReadLine();
 
-                    if (userInput != null && habitsToTrack.Contains(userInput))
+                    if (int.TryParse(userInput, out int habitIndex) && habitIndex > 0 && habitIndex <= habitsToTrack.Count)
                     {
-                        string habitsCompletedID = userInput + DateOnly.FromDateTime(selectedDate).ToString("yyyy-MM-dd");
+                        string selectedHabit = habitsToTrack[habitIndex - 1];
+                        string habitsCompletedID = selectedHabit + DateOnly.FromDateTime(selectedDate).ToString("yyyy-MM-dd");
+
                         MarkHabitDone(habitsCompletedID);
                         validInput = true;
                     }
@@ -169,8 +176,8 @@ void ShowMenu()
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine($"Habit \"{userInput}\" is not on the list. Please enter a valid habit name or add a new habit to the list. Press enter continue.\n");
-                        userInput = Console.ReadLine();
+                        Console.WriteLine("Invalid selection. Please enter a valid number corresponding to a habit. Press enter to continue.");
+                        Console.ReadLine();
                     }
                 }
 
@@ -180,9 +187,7 @@ void ShowMenu()
 
                 validInput = false;
 
-                // @TODO Add warning and confimration before deleting data.
-                // @TODO Add rename option.
-
+                // @TODO Add warning and confimration before deleting data.s
                 Console.Clear();
                 Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
                 userInput = Console.ReadLine();
@@ -198,12 +203,59 @@ void ShowMenu()
                 {
                     Console.Clear();
                     Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
-                    userInput = Console.ReadLine();
+                    Console.ReadLine();
                 }
 
                 break;
 
             case "5":
+                validInput = false;
+                Console.Clear();
+
+                if (habitsToTrack.Count == 0)
+                {
+                    Console.WriteLine("No habits to rename. Please add a habit first. Press enter to continue.");
+                    Console.ReadLine();
+                    break;
+                }
+
+                Console.WriteLine("Select the habit you want to rename:");
+                for (int i = 0; i < habitsToTrack.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {habitsToTrack[i]}");
+                }
+
+                userInput = Console.ReadLine();
+
+                if (int.TryParse(userInput, out int renameIndex) && renameIndex > 0 && renameIndex <= habitsToTrack.Count)
+                {
+                    string oldHabitName = habitsToTrack[renameIndex - 1];
+                    Console.WriteLine($"Enter the new name for the habit \"{oldHabitName}\":");
+                    string? newHabitName = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(newHabitName) && !newHabitName.Contains(','))
+                    {
+                        RenameHabit(oldHabitName, newHabitName);
+                        Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
+                        Console.ReadLine();
+                    }
+                    
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
+                        Console.ReadLine();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Press enter to continue.");
+                    Console.ReadLine();
+                }
+
+                break;
+
+            case "6":
 
                 validInput = false;
                 int selectedFirstDay = 0;
@@ -349,7 +401,7 @@ void ModifyHabitList(string habit)
         {
             while (habitsCompleted.Count > 0 && habitsCompleted[i].ToString().Substring(0, habit.Length).Equals(habit))
             {
-                MarkHabitDone(habitsCompleted[i], false);
+                MarkHabitDone(habitsCompleted[i]);
 
                 if (i > habitsCompleted.Count - 1) break;
             }
@@ -375,6 +427,26 @@ void ModifyHabitList(string habit)
 
     SaveUserData();
     ShowWeekGrid();
+}
+
+void RenameHabit(string oldHabitName, string newHabitName)
+{
+    int habitIndex = habitsToTrack.IndexOf(oldHabitName);
+    if (habitIndex != -1)
+    {
+        habitsToTrack[habitIndex] = newHabitName;
+    }
+
+    for (int i = 0; i < habitsCompleted.Count; i++)
+    {
+        if (habitsCompleted[i].StartsWith(oldHabitName))
+        {
+            string datePart = habitsCompleted[i].Substring(oldHabitName.Length);
+            habitsCompleted[i] = newHabitName + datePart;
+        }
+    }
+
+    SaveUserData();
 }
 
 void ShowWeekGrid()
@@ -442,7 +514,10 @@ void ShowGridBody()
                 currentWeekDay = $"{icon}".PadLeft(daysOfWeek[i - 1].ToString().Length + 1);
                 habitCheckRow += currentWeekDay;
 
-                streaksRow = $"{currentStreak}".ToString().PadLeft(daysOfWeek[i].ToString().Length - 3) + $"{recordStreak}".ToString().PadLeft(8);
+                int currentStreakPadding = daysOfWeek[i].ToString().Length + currentStreak.ToString().Length - 4;
+                int recordStreakPadding = 8 + recordStreak.ToString().Length - currentStreak.ToString().Length;
+
+                streaksRow = currentStreak.ToString().PadLeft(currentStreakPadding) + recordStreak.ToString().PadLeft(recordStreakPadding);
             }
 
             else
@@ -637,9 +712,9 @@ void SetFirstDayOfWeek(DayOfWeek customFirstDay)
     }
 }
 
-void MarkHabitDone(string habitEntryID, bool habitDone = true)
+void MarkHabitDone(string habitEntryID)
 {
-    if (habitDone == false)
+    if (habitsCompleted.Contains(habitEntryID))
         habitsCompleted.Remove(habitEntryID);
 
     else
