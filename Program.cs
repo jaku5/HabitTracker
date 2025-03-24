@@ -483,14 +483,12 @@ void ModifyHabitList(string habit)
 
 void RenameHabit(string oldHabitName, string newHabitName)
 {
-    // Update the habit name in the habitsToTrack list
     int habitIndex = habitsToTrack.IndexOf(oldHabitName);
     if (habitIndex != -1)
     {
         habitsToTrack[habitIndex] = newHabitName;
     }
 
-    // Update the habit name in the habitsCompleted list
     for (int i = 0; i < habitsCompleted.Count; i++)
     {
         if (habitsCompleted[i].StartsWith(oldHabitName))
@@ -500,7 +498,6 @@ void RenameHabit(string oldHabitName, string newHabitName)
         }
     }
 
-    // Save the updated data
     SaveUserData();
 }
 
