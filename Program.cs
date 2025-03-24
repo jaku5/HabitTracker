@@ -179,9 +179,7 @@ void ShowMenu()
 
                 validInput = false;
 
-                // @TODO Add warning and confimration before deleting data.
-                // @TODO Add rename option.
-
+                // @TODO Add warning and confimration before deleting data.s
                 Console.Clear();
                 Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
                 userInput = Console.ReadLine();
@@ -197,7 +195,7 @@ void ShowMenu()
                 {
                     Console.Clear();
                     Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
-                    userInput = Console.ReadLine();
+                    Console.ReadLine();
                 }
 
                 break;
@@ -233,9 +231,11 @@ void ShowMenu()
                         Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
                         Console.ReadLine();
                     }
+                    
                     else
                     {
-                        Console.WriteLine("Invalid habit name. Name cannot be empty or contain a comma. Press enter to continue.");
+                        Console.Clear();
+                        Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
                         Console.ReadLine();
                     }
                 }
