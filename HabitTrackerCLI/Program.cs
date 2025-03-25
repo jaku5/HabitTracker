@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using habit_tracker_cli.HabitTrackerCLI;
+using System.Text.Json;
 
 DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
@@ -212,11 +213,11 @@ void ShowMenu()
                 validInput = false;
                 Console.Clear();
 
-                // @TODO Verify if this is necessery
                 if (habitsToTrack.Count == 0)
                 {
                     Console.WriteLine("No habits to rename. Please add a habit first. Press enter to continue.");
                     Console.ReadLine();
+                    InitializeUserData();
                     break;
                 }
 
@@ -346,11 +347,11 @@ void LoadUserData()
         string jsonData = File.ReadAllText("./habit_data.json");
         var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
-        if (userData != null && userData.HabitsToTrack.Count > 0)
+        if (userData.HabitsToTrack.Count > 0)
         {
-            habitsToTrack = userData.HabitsToTrack ?? new List<string>();
-            habitsCompleted = userData.HabitsCompleted ?? new List<string>();
-            firstDayOfWeek = userData.FirstDayOfWeek ?? DayOfWeek.Monday;
+            habitsToTrack = userData.HabitsToTrack;
+            habitsCompleted = userData.HabitsCompleted;
+            firstDayOfWeek = userData.FirstDayOfWeek;
         }
 
         else
@@ -784,11 +785,4 @@ void SetCustomDate(int year, int month, int day)
     DateTime customDate = new DateTime(year: year, month: month, day: day);
 
     selectedDate = customDate;
-}
-
-class UserData
-{
-    public List<string>? HabitsToTrack { get; set; }
-    public List<string>? HabitsCompleted { get; set; }
-    public DayOfWeek? FirstDayOfWeek { get; set; }
 }
