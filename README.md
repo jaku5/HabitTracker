@@ -8,6 +8,7 @@ A simple command-line application to help you track your habits and monitor your
 - Mark habits as completed for specific dates.
 - View a weekly grid of your habits and their completion status.
 - Track your current and record streaks for each habit.
+- Reorder habits position on the list.
 - Customize the first day of the week for the weekly grid.
 
 ## Getting Started
@@ -59,7 +60,12 @@ Once the program is running, you can interact with it using the following option
 5. **Rename an Existing Habit**  
    Select a habit from the list and provide a new name. This will update the habit name and preserve all associated tracking data.
 
-6. **Set First Day of the Week**  
+6. **Reorder Habits**  
+   - Enter the number corresponding to the habit you want to move.
+   - Enter the new position for the selected habit (1 to the total number of habits).
+   - The habit will be moved to the new position, and the updated order will be saved.
+
+7. **Set First Day of the Week**  
    Customize the first day of the week for the weekly grid. Options include Monday, Tuesday, Wednesday, etc.
 
 ### Data Persistence

@@ -289,16 +289,18 @@ void ShowMenu()
 
                     if (int.TryParse(newHabitListPosition, out int newHabitIndex) && newHabitIndex > 0 && newHabitIndex <= habitsToTrack.Count)
                     {
-                        habitsToTrack.RemoveAt(reorderIndex -1);
-                        habitsToTrack.Insert(newHabitIndex -1, habitName);
+                        habitsToTrack.RemoveAt(reorderIndex - 1);
+                        habitsToTrack.Insert(newHabitIndex - 1, habitName);
+
                         Console.WriteLine($"Habit \"{habitName}\" has been moved to position \"{newHabitIndex}\". Press enter to continue.");
+                        SaveUserData();
                         Console.ReadLine();
                     }
 
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
+                        Console.WriteLine($"Invalid position \"{newHabitListPosition}\". Please enter a number between 1 and {habitsToTrack.Count}. Press enter to continue.");
                         Console.ReadLine();
                     }
                 }
