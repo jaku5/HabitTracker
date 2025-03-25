@@ -1,4 +1,4 @@
-namespace habit_tracker_cli.HabitTrackerCLI
+namespace HabitTrackerCLI
 {
     public class UserData
     {

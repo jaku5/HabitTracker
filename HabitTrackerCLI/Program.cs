@@ -1,4 +1,4 @@
-﻿using habit_tracker_cli.HabitTrackerCLI;
+﻿using HabitTrackerCLI;
 using System.Text.Json;
 
 DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
@@ -383,6 +383,7 @@ void InitializeUserData()
 {
     do
     {
+        Console.Clear();
         Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
 
         userInput = Console.ReadLine();
