@@ -44,28 +44,28 @@ Once the program is running, you can interact with it using the following option
 
 ### Menu Options
 
-1. **Show Week Grid for Selected Date**  
+1. **Show week grid for selected date**  
    Displays the weekly grid for the currently selected date.
 
-2. **Select Date**  
+2. **Select date**  
    Allows you to choose a specific date to view or update habits. You will be prompted to enter the year, month, and day.
 
-3. **Mark Habit as Done**  
+3. **Mark habit as done for selected date**  
    Select a habit and mark it as completed for the currently selected date. You can also unmark it if it was previously marked.
 
-4. **Add or Remove Habit**  
+4. **Add or remove habit**  
    - To add a habit, type the name of the habit and press Enter.
    - To remove a habit, type the name of an existing habit. **Note:** Removing a habit will delete all associated tracking data.
 
-5. **Rename an Existing Habit**  
+5. **Rename an existing habit**  
    Select a habit from the list and provide a new name. This will update the habit name and preserve all associated tracking data.
 
-6. **Reorder Habits**  
+6. **Reorder habit list**  
    - Enter the number corresponding to the habit you want to move.
    - Enter the new position for the selected habit (1 to the total number of habits).
    - The habit will be moved to the new position, and the updated order will be saved.
 
-7. **Set First Day of the Week**  
+7. **Set first day of the week**  
    Customize the first day of the week for the weekly grid. Options include Monday, Tuesday, Wednesday, etc.
 
 ### Data Persistence

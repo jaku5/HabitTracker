@@ -49,8 +49,8 @@ void ShowMenu()
         Console.WriteLine("3. Mark habit as done for selected date.");
         Console.WriteLine("4. Add or remove habit.");
         Console.WriteLine("5. Rename an existing habit.");
-        Console.WriteLine("6. Reorder Habits.");
-        Console.WriteLine("7. Set first day of the week");
+        Console.WriteLine("6. Reorder habit list.");
+        Console.WriteLine("7. Set first day of the week.");
 
         userInput = Console.ReadLine();
 
