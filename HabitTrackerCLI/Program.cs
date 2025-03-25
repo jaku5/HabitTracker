@@ -49,7 +49,8 @@ void ShowMenu()
         Console.WriteLine("3. Mark habit as done for selected date.");
         Console.WriteLine("4. Add or remove habit.");
         Console.WriteLine("5. Rename an existing habit.");
-        Console.WriteLine("6. Set first day of the week");
+        Console.WriteLine("6. Reorder Habits.");
+        Console.WriteLine("7. Set first day of the week");
 
         userInput = Console.ReadLine();
 
@@ -210,6 +211,7 @@ void ShowMenu()
                 break;
 
             case "5":
+
                 validInput = false;
                 Console.Clear();
 
@@ -241,7 +243,7 @@ void ShowMenu()
                         Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
                         Console.ReadLine();
                     }
-                    
+
                     else
                     {
                         Console.Clear();
@@ -258,6 +260,57 @@ void ShowMenu()
                 break;
 
             case "6":
+
+                validInput = false;
+                Console.Clear();
+
+                if (habitsToTrack.Count == 0)
+                {
+                    Console.WriteLine("No habits to reorder. Please add a habit first. Press enter to continue.");
+                    Console.ReadLine();
+                    InitializeUserData();
+                    break;
+                }
+
+                Console.WriteLine("Select the habit you want to reorder:");
+                for (int i = 0; i < habitsToTrack.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {habitsToTrack[i]}");
+                }
+
+                userInput = Console.ReadLine();
+
+                if (int.TryParse(userInput, out int reorderIndex) && reorderIndex > 0 && reorderIndex <= habitsToTrack.Count)
+                {
+                    string habitName = habitsToTrack[reorderIndex - 1];
+
+                    Console.WriteLine($"Enter the new position for the habit \"{habitName}\":");
+                    string? newHabitListPosition = Console.ReadLine();
+
+                    if (int.TryParse(newHabitListPosition, out int newHabitIndex) && newHabitIndex > 0 && newHabitIndex <= habitsToTrack.Count)
+                    {
+                        habitsToTrack.RemoveAt(reorderIndex -1);
+                        habitsToTrack.Insert(newHabitIndex -1, habitName);
+                        Console.WriteLine($"Habit \"{habitName}\" has been moved to position \"{newHabitIndex}\". Press enter to continue.");
+                        Console.ReadLine();
+                    }
+
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
+                        Console.ReadLine();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Press enter to continue.");
+                    Console.ReadLine();
+                }
+
+                break;
+
+            case "7":
 
                 validInput = false;
                 int selectedFirstDay = 0;
