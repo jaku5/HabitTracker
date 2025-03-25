@@ -187,9 +187,7 @@ void ShowMenu()
 
                 validInput = false;
 
-                // @TODO Add warning and confimration before deleting data.
-                // @TODO Add rename option.
-
+                // @TODO Add warning and confimration before deleting data
                 Console.Clear();
                 Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
                 userInput = Console.ReadLine();
@@ -205,7 +203,7 @@ void ShowMenu()
                 {
                     Console.Clear();
                     Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
-                    userInput = Console.ReadLine();
+                    Console.ReadLine();
                 }
 
                 break;
@@ -214,6 +212,7 @@ void ShowMenu()
                 validInput = false;
                 Console.Clear();
 
+                // @TODO Verify if this is necessery
                 if (habitsToTrack.Count == 0)
                 {
                     Console.WriteLine("No habits to rename. Please add a habit first. Press enter to continue.");
@@ -241,9 +240,11 @@ void ShowMenu()
                         Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
                         Console.ReadLine();
                     }
+                    
                     else
                     {
-                        Console.WriteLine("Invalid habit name. Name cannot be empty or contain a comma. Press enter to continue.");
+                        Console.Clear();
+                        Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
                         Console.ReadLine();
                     }
                 }
@@ -345,13 +346,19 @@ void LoadUserData()
         string jsonData = File.ReadAllText("./habit_data.json");
         var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
-        if (userData != null)
+        if (userData != null && userData.HabitsToTrack.Count > 0)
         {
             habitsToTrack = userData.HabitsToTrack ?? new List<string>();
             habitsCompleted = userData.HabitsCompleted ?? new List<string>();
             firstDayOfWeek = userData.FirstDayOfWeek ?? DayOfWeek.Monday;
         }
+
+        else
+        {
+            InitializeUserData();
+        }
     }
+
     else
     {
         InitializeUserData();
@@ -431,14 +438,12 @@ void ModifyHabitList(string habit)
 
 void RenameHabit(string oldHabitName, string newHabitName)
 {
-    // Update the habit name in the habitsToTrack list
     int habitIndex = habitsToTrack.IndexOf(oldHabitName);
     if (habitIndex != -1)
     {
         habitsToTrack[habitIndex] = newHabitName;
     }
 
-    // Update the habit name in the habitsCompleted list
     for (int i = 0; i < habitsCompleted.Count; i++)
     {
         if (habitsCompleted[i].StartsWith(oldHabitName))
@@ -448,7 +453,6 @@ void RenameHabit(string oldHabitName, string newHabitName)
         }
     }
 
-    // Save the updated data
     SaveUserData();
 }
 
@@ -782,7 +786,6 @@ void SetCustomDate(int year, int month, int day)
     selectedDate = customDate;
 }
 
-// Define a class to represent user data
 class UserData
 {
     public List<string>? HabitsToTrack { get; set; }
