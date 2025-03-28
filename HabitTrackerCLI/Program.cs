@@ -13,13 +13,9 @@ do
     userInterface.userInput = Console.ReadLine();
 
     if (userInterface.userInput != null && userInterface.userInput.ToLower().Contains("exit"))
-    {
         userInterface.exit = true;
-    }
 
     else if (userInterface.userInput != null && (userInterface.userInput.ToLower().Contains("menu") || userInterface.userInput.ToLower().Contains('m')))
-    {
         userInterface.ShowMenu();
-    }
 
 } while (userInterface.exit == false);
