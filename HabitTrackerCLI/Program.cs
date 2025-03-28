@@ -1,21 +1,34 @@
-﻿using HabitTrackerCLI;
+﻿using System.Text.Json;
+using HabitTrackerCLI;
 
-HabitTracker habitTracker = new HabitTracker();
-UserInterface userInterface = new UserInterface(habitTracker);
-
-do
+try
 {
-    if (habitTracker.LoadUserData())
-        userInterface.ShowWeekGrid();
-    else
-        userInterface.InitializeUserData();
+    HabitTracker habitTracker = new HabitTracker();
+    UserInterface userInterface = new UserInterface(habitTracker);
 
-    userInterface.userInput = Console.ReadLine();
+    do
+    {
+        if (habitTracker.LoadUserData())
+            userInterface.ShowWeekGrid();
+        else
+            userInterface.InitializeUserData();
 
-    if (userInterface.userInput != null && userInterface.userInput.ToLower().Contains("exit"))
-        userInterface.exit = true;
+        userInterface.userInput = Console.ReadLine();
 
-    else if (userInterface.userInput != null && (userInterface.userInput.ToLower().Contains("menu") || userInterface.userInput.ToLower().Contains('m')))
-        userInterface.ShowMenu();
+        if (userInterface.userInput != null && userInterface.userInput.ToLower().Contains("exit"))
+            userInterface.exit = true;
 
-} while (userInterface.exit == false);
+        else if (userInterface.userInput != null && (userInterface.userInput.ToLower().Contains("menu") || userInterface.userInput.ToLower().Contains('m')))
+            userInterface.ShowMenu();
+
+    } while (userInterface.exit == false);
+}
+
+catch (InvalidDataException ex) when (ex.InnerException is JsonException)
+{
+    Console.Clear();
+    Console.Write($"Error: {ex.Message} ");
+    Console.WriteLine("Please inspect the file or delete it for a fresh start.");
+    Console.WriteLine("Press enter to exit.");
+    Console.ReadLine();
+}

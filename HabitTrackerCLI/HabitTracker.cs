@@ -110,21 +110,28 @@ public class HabitTracker
     public bool LoadUserData()
     {
         bool dataLoaded = false;
-
-        if (File.Exists("./habit_data.json"))
+        try
         {
-            string jsonData = File.ReadAllText("./habit_data.json");
-            var userData = JsonSerializer.Deserialize<UserData>(jsonData);
-
-            if (userData.HabitsToTrack.Count > 0)
+            if (File.Exists("./habit_data.json"))
             {
-                _habitsToTrack = userData.HabitsToTrack;
-                _habitsCompleted = userData.HabitsCompleted;
-                _firstDayOfWeek = userData.FirstDayOfWeek;
-                
-                dataLoaded = true;
+                string jsonData = File.ReadAllText("./habit_data.json");
+                var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
-                return dataLoaded;
+                if (userData.HabitsToTrack.Count > 0)
+                {
+                    _habitsToTrack = userData.HabitsToTrack;
+                    _habitsCompleted = userData.HabitsCompleted;
+                    _firstDayOfWeek = userData.FirstDayOfWeek;
+
+                    dataLoaded = true;
+
+                    return dataLoaded;
+                }
+
+                else
+                {
+                    return dataLoaded;
+                }
             }
 
             else
@@ -133,9 +140,9 @@ public class HabitTracker
             }
         }
 
-        else
+        catch (JsonException e)
         {
-            return dataLoaded;
+            throw new InvalidDataException("Failed to load user data due to a JSON error.", e);
         }
     }
 
