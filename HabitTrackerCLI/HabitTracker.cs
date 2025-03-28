@@ -181,12 +181,12 @@ public class HabitTracker
             if (habitCompletedID.ToString().Contains(habit))
             {
                 DateOnly.TryParse(habitCompletedID.Substring(habit.Length), out currentHabitDate);
-                string currentHabitID = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
+                string currentHabitId = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
 
-                while (HabitsCompleted.Contains(currentHabitID))
+                while (HabitsCompleted.Contains(currentHabitId))
                 {
                     currentHabitDate = currentHabitDate.AddDays(-1);
-                    currentHabitID = habit + currentHabitDate.ToString("yyyy-MM-dd");
+                    currentHabitId = habit + currentHabitDate.ToString("yyyy-MM-dd");
                     tempRecordStreak++;
                 }
 
