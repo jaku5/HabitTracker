@@ -150,19 +150,47 @@ public class HabitTracker
         {
             throw new InvalidDataException("Failed to load user data due to a JSON error.", e);
         }
+
+        catch (IOException e)
+        {
+            throw new IOException("Failed to load user data due to a I/O error.", e);
+        }
+
+        catch (UnauthorizedAccessException e)
+        {
+            throw new UnauthorizedAccessException("Failed to load user data due to a permission error.", e);
+        }
     }
 
     public void SaveUserData()
     {
-        var userData = new UserData
+        try
         {
-            HabitsToTrack = _habitsToTrack,
-            HabitsCompleted = _habitsCompleted,
-            FirstDayOfWeek = _firstDayOfWeek
-        };
+            var userData = new UserData
+            {
+                HabitsToTrack = _habitsToTrack,
+                HabitsCompleted = _habitsCompleted,
+                FirstDayOfWeek = _firstDayOfWeek
+            };
 
-        string jsonData = JsonSerializer.Serialize(userData, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(_userDataFilePath, jsonData);
+            string jsonData = JsonSerializer.Serialize(userData, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(_userDataFilePath, jsonData);
+        }
+
+        catch (JsonException e)
+        {
+            throw new InvalidDataException("Failed to save user data due to a JSON error.", e);
+        }
+
+        catch (IOException e)
+        {
+            throw new IOException("Failed to save user data due to a I/O error.", e);
+        }
+
+        catch (UnauthorizedAccessException e)
+        {
+            throw new UnauthorizedAccessException("Failed to save user data due to a permission error.", e);
+        }
     }
 
     public int CalculateCurrentStreak(string habit)

@@ -40,3 +40,21 @@ catch (InvalidDataException ex) when (ex.InnerException is JsonException)
     Console.WriteLine("Press enter to exit.");
     Console.ReadLine();
 }
+
+catch (IOException ex) when (ex.InnerException is IOException)
+{
+    Console.Clear();
+    Console.Write($"Error: {ex.Message} ");
+    Console.WriteLine("I/O error occurred while saving user data. Please restart application and try again.");
+    Console.WriteLine("Press enter to exit.");
+    Console.ReadLine();
+}
+
+catch (InvalidDataException ex) when (ex.InnerException is JsonException)
+{
+    Console.Clear();
+    Console.Write($"Error: {ex.Message} ");
+    Console.WriteLine("Access denied while saving user data. Please ensure you have necessary permission before attempting saving data.");
+    Console.WriteLine("Press enter to exit.");
+    Console.ReadLine();
+}
