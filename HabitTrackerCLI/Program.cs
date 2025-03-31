@@ -3,7 +3,15 @@ using HabitTrackerCLI;
 
 try
 {
-    HabitTracker habitTracker = new HabitTracker();
+    string userDataFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HabitTrackerCLI", "habit_data.json");
+    string? userDirectoryPath = Path.GetDirectoryName(userDataFilePath);
+
+    if (!string.IsNullOrEmpty(userDirectoryPath) && !Directory.Exists(userDirectoryPath))
+    {
+        Directory.CreateDirectory(userDirectoryPath);
+    }
+
+    HabitTracker habitTracker = new HabitTracker(userDataFilePath);
     UserInterface userInterface = new UserInterface(habitTracker);
 
     do

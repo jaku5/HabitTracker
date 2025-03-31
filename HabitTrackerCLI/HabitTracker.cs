@@ -4,6 +4,7 @@ namespace HabitTrackerCLI;
 
 public class HabitTracker
 {
+    private readonly string _userDataFilePath;
     private List<string> _habitsToTrack = new List<string>();
     private List<string> _habitsCompleted = new List<string>();
 
@@ -11,6 +12,11 @@ public class HabitTracker
     private DateTime _selectedDate = _currentDate;
 
     private DayOfWeek _firstDayOfWeek = DayOfWeek.Monday;
+
+    public HabitTracker(string userDataFilePath)
+    {
+        _userDataFilePath = userDataFilePath;
+    }
 
     public List<string> HabitsToTrack
     {
@@ -76,13 +82,13 @@ public class HabitTracker
         SaveUserData();
     }
 
-    public void MarkHabitDone(string habitEntryID)
+    public void MarkHabitDone(string habitEntryId)
     {
-        if (_habitsCompleted.Contains(habitEntryID))
-            _habitsCompleted.Remove(habitEntryID);
+        if (_habitsCompleted.Contains(habitEntryId))
+            _habitsCompleted.Remove(habitEntryId);
 
         else
-            _habitsCompleted.Add(habitEntryID);
+            _habitsCompleted.Add(habitEntryId);
 
         SaveUserData();
     }
@@ -112,9 +118,9 @@ public class HabitTracker
         bool dataLoaded = false;
         try
         {
-            if (File.Exists("./habit_data.json"))
+            if (File.Exists(_userDataFilePath))
             {
-                string jsonData = File.ReadAllText("./habit_data.json");
+                string jsonData = File.ReadAllText(_userDataFilePath);
                 var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
                 if (userData.HabitsToTrack.Count > 0)
@@ -156,7 +162,7 @@ public class HabitTracker
         };
 
         string jsonData = JsonSerializer.Serialize(userData, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText("./habit_data.json", jsonData);
+        File.WriteAllText(_userDataFilePath, jsonData);
     }
 
     public int CalculateCurrentStreak(string habit)
