@@ -24,7 +24,7 @@ public class HabitTracker
         set => _habitsCompleted = value;
     }
 
-    public DateTime CurrentDate
+    public static DateTime CurrentDate
     {
         get => _currentDate;
     }

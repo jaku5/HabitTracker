@@ -4,7 +4,7 @@ public class UserInterface
 {
     private readonly HabitTracker habitTracker;
 
-    public UserInterface(HabitTracker habitTracker)
+    internal UserInterface(HabitTracker habitTracker)
     {
         this.habitTracker = habitTracker;
     }
@@ -12,11 +12,11 @@ public class UserInterface
     DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 
     // User input helper properties
-    public string? userInput { get; set; }
+    internal string? userInput { get; set; }
     bool validInput = false;
     internal bool exit { get; set; } = false;
 
-    public void ShowMenu()
+    internal void ShowMenu()
     {
         string menuSelection = "";
         validInput = false;
@@ -214,7 +214,7 @@ public class UserInterface
 
     private void MarkHabitDone()
     {
-        if (DateOnly.FromDateTime(habitTracker.SelectedDate) > DateOnly.FromDateTime(habitTracker.CurrentDate))
+        if (DateOnly.FromDateTime(habitTracker.SelectedDate) > DateOnly.FromDateTime(HabitTracker.CurrentDate))
         {
             Console.Clear();
             Console.WriteLine($"Selected date {habitTracker.SelectedDate} is in the future. Please try again with a valid date. Press enter to continue.");
@@ -252,7 +252,7 @@ public class UserInterface
 
     }
 
-    public void InitializeUserData()
+    internal void InitializeUserData()
     {
         do
         {
@@ -278,7 +278,7 @@ public class UserInterface
 
     public void ShowWeekGrid()
     {
-        Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Today is {habitTracker.CurrentDate.DayOfWeek} {DateOnly.FromDateTime(habitTracker.CurrentDate)}.\n\t\tSelected date is {habitTracker.SelectedDate.DayOfWeek} {DateOnly.FromDateTime(habitTracker.SelectedDate)}. Type \"menu\" or \"m\" to display options menu.\n");
+        Console.WriteLine($"\n\t\tWelcome to Habit Tracker. Today is {HabitTracker.CurrentDate.DayOfWeek} {DateOnly.FromDateTime(HabitTracker.CurrentDate)}.\n\t\tSelected date is {habitTracker.SelectedDate.DayOfWeek} {DateOnly.FromDateTime(habitTracker.SelectedDate)}. Type \"menu\" or \"m\" to display options menu.\n");
 
         ApplyFirstDayOfWeek(habitTracker.FirstDayOfWeek);
         ShowGridHeader();
@@ -314,7 +314,7 @@ public class UserInterface
 
             string habitCheckRow = "";
             string streaksRow = "";
-            string habitEntryID = "";
+            string habitEntryId = "";
 
             for (int i = 0; i < daysOfWeek.Length; i++)
             {
@@ -323,9 +323,9 @@ public class UserInterface
                 string checkIcon = "- [x] ";
                 string uncheckIcon = "- [ ] ";
                 string icon = uncheckIcon;
-                habitEntryID = $"{habit}{habitDate.ToString("yyyy-MM-dd")}";
+                habitEntryId = $"{habit}{habitDate.ToString("yyyy-MM-dd")}";
 
-                if (habitTracker.HabitsCompleted.Contains(habitEntryID))
+                if (habitTracker.HabitsCompleted.Contains(habitEntryId))
                 {
                     icon = checkIcon;
                 }
@@ -584,7 +584,7 @@ public class UserInterface
         Console.Clear();
     }
 
-    private void ApplyFirstDayOfWeek(DayOfWeek customFirstDay)
+    void ApplyFirstDayOfWeek(DayOfWeek customFirstDay)
     {
         int dayOfWeekOffset = 0;
 
@@ -620,13 +620,13 @@ public class UserInterface
     {
         Console.Clear();
 
-        int year = habitTracker.CurrentDate.Year;
-        int month = habitTracker.CurrentDate.Month;
-        int day = habitTracker.CurrentDate.Day;
+        int year = HabitTracker.CurrentDate.Year;
+        int month = HabitTracker.CurrentDate.Month;
+        int day = HabitTracker.CurrentDate.Day;
 
         do
         {
-            Console.WriteLine($"Type year number and press enter (today is {habitTracker.CurrentDate.Year}):");
+            Console.WriteLine($"Type year number and press enter (today is {HabitTracker.CurrentDate.Year}):");
             userInput = Console.ReadLine();
 
             if (userInput != null)
@@ -642,7 +642,7 @@ public class UserInterface
 
         do
         {
-            Console.WriteLine($"Type month number and press enter (today is {habitTracker.CurrentDate.Month}):");
+            Console.WriteLine($"Type month number and press enter (today is {HabitTracker.CurrentDate.Month}):");
             userInput = Console.ReadLine();
 
             if (userInput != null)
@@ -658,7 +658,7 @@ public class UserInterface
 
         do
         {
-            Console.WriteLine($"Type day number and press enter (today is {habitTracker.CurrentDate.Day}):");
+            Console.WriteLine($"Type day number and press enter (today is {HabitTracker.CurrentDate.Day}):");
             userInput = Console.ReadLine();
 
             if (userInput != null)
