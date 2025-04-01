@@ -6,7 +6,7 @@ public class HabitTracker
 {
     private readonly string _userDataFilePath;
     private List<string> _habitsToTrack = new List<string>();
-    private List<string> _habitsCompleted = new List<string>();
+    private HashSet<string> _habitsCompleted = new HashSet<string>();
 
     private static DateTime _currentDate = DateTime.Now;
     private DateTime _selectedDate = _currentDate;
@@ -24,7 +24,7 @@ public class HabitTracker
         set => _habitsToTrack = value;
     }
 
-    public List<string> HabitsCompleted
+    public HashSet<string> HabitsCompleted
     {
         get => _habitsCompleted;
         set => _habitsCompleted = value;
@@ -51,24 +51,25 @@ public class HabitTracker
     {
         if (_habitsToTrack.Contains(habit))
         {
-            for (int i = 0; i < _habitsCompleted.Count; i++)
-            {
-                while (_habitsCompleted.Count > 0 && _habitsCompleted[i].ToString().Substring(0, habit.Length).Equals(habit))
-                {
-                    MarkHabitDone(_habitsCompleted[i]);
+            var itemsToRemove = new HashSet<string>();
 
-                    if (i > _habitsCompleted.Count - 1) break;
+            foreach (var habitCompleted in HabitsCompleted)
+            {
+                if (habitCompleted.StartsWith(habit))
+                {
+                    itemsToRemove.Add(habitCompleted);
                 }
             }
 
-            if (_habitsToTrack.Count > 1)
+            foreach (var item in itemsToRemove)
             {
-                _habitsToTrack.Remove(habit);
+                MarkHabitDone(item);
             }
 
-            else
+            HabitsToTrack.Remove(habit);
+
+            if (HabitsToTrack.Count == 0)
             {
-                _habitsToTrack.Remove(habit);
                 SaveUserData();
                 LoadUserData();
             }
@@ -84,11 +85,11 @@ public class HabitTracker
 
     public void MarkHabitDone(string habitEntryId)
     {
-        if (_habitsCompleted.Contains(habitEntryId))
-            _habitsCompleted.Remove(habitEntryId);
+        if (HabitsCompleted.Contains(habitEntryId))
+            HabitsCompleted.Remove(habitEntryId);
 
         else
-            _habitsCompleted.Add(habitEntryId);
+            HabitsCompleted.Add(habitEntryId);
 
         SaveUserData();
     }
@@ -101,14 +102,23 @@ public class HabitTracker
             HabitsToTrack[habitIndex] = newHabitName;
         }
 
-        for (int i = 0; i < HabitsCompleted.Count; i++)
+        var updatedHabits = new HashSet<string>();
+
+        foreach (var habitCompleted in HabitsCompleted)
         {
-            if (HabitsCompleted[i].StartsWith(oldHabitName))
+            if (habitCompleted.StartsWith(oldHabitName))
             {
-                string datePart = HabitsCompleted[i].Substring(oldHabitName.Length);
-                HabitsCompleted[i] = newHabitName + datePart;
+                string datePart = habitCompleted.Substring(oldHabitName.Length);
+                updatedHabits.Add(newHabitName + datePart);
+            }
+
+            else
+            {
+                updatedHabits.Add(habitCompleted);
             }
         }
+
+        HabitsCompleted = updatedHabits;
 
         SaveUserData();
     }
@@ -197,12 +207,12 @@ public class HabitTracker
     {
         int currentStreak = 0;
         DateOnly currentHabitDate = DateOnly.FromDateTime(CurrentDate);
-        string currentHabitID = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
+        string currentHabitId = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
 
-        while (HabitsCompleted.Contains(currentHabitID))
+        while (HabitsCompleted.Contains(currentHabitId))
         {
             currentHabitDate = currentHabitDate.AddDays(-1);
-            currentHabitID = habit + currentHabitDate.ToString("yyyy-MM-dd");
+            currentHabitId = habit + currentHabitDate.ToString("yyyy-MM-dd");
             currentStreak++;
         }
 
@@ -213,15 +223,15 @@ public class HabitTracker
     {
         int recordStreak = 0;
 
-        foreach (string habitCompletedID in HabitsCompleted)
+        foreach (string habitCompletedId in HabitsCompleted)
         {
             DateOnly currentHabitDate;
 
             int tempRecordStreak = 0;
 
-            if (habitCompletedID.ToString().Contains(habit))
+            if (habitCompletedId.ToString().Contains(habit))
             {
-                DateOnly.TryParse(habitCompletedID.Substring(habit.Length), out currentHabitDate);
+                DateOnly.TryParse(habitCompletedId.Substring(habit.Length), out currentHabitDate);
                 string currentHabitId = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
 
                 while (HabitsCompleted.Contains(currentHabitId))
