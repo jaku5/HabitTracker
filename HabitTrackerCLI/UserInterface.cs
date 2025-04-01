@@ -11,6 +11,9 @@ public class UserInterface
 
     DayOfWeek[] daysOfWeek = new DayOfWeek[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday };
 
+    private const int habitNameLength = 14;
+    private const int checkRowPadding = 16;
+    
     // User input helper properties
     internal string? userInput { get; set; }
     bool validInput = false;
@@ -354,7 +357,7 @@ public class UserInterface
                 }
             }
 
-            if (habit.Length > 14)
+            if (habit.Length > habitNameLength)
             {
                 FormatLongHabitName(habit, habitCheckRow, streaksRow);
             }
@@ -362,7 +365,7 @@ public class UserInterface
             else
             {
                 Console.Write($"{habit}");
-                Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (16 - habit.Length)) + $"{streaksRow}\n");
+                Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (checkRowPadding - habit.Length)) + $"{streaksRow}\n");
             }
         }
     }
@@ -380,9 +383,9 @@ public class UserInterface
             for (int i = 0; i < longHabitNameParts.Length; i++)
             {
 
-                if (i == longHabitNameParts.Length - 1 && longHabitNameParts[i].Length < 14)
+                if (i == longHabitNameParts.Length - 1 && longHabitNameParts[i].Length < habitNameLength)
                 {
-                    if (lineLength + longHabitNameParts[i].Length < 14)
+                    if (lineLength + longHabitNameParts[i].Length < habitNameLength)
                     {
                         longHabit += $"{longHabitNameParts[i]}";
                         lineLength += longHabitNameParts[i].Length;
@@ -402,9 +405,9 @@ public class UserInterface
                     }
                 }
 
-                else if (longHabitNameParts[i].Length < 14)
+                else if (longHabitNameParts[i].Length < habitNameLength)
                 {
-                    if (lineLength + longHabitNameParts[i].Length < 14)
+                    if (lineLength + longHabitNameParts[i].Length < habitNameLength)
                     {
                         longHabit += $"{longHabitNameParts[i]} ";
                         lineLength += longHabitNameParts[i].Length + 1;
@@ -434,7 +437,7 @@ public class UserInterface
                     {
                         longHabitTemp = "";
 
-                        while (longHabitTemp.Length <= 14 && charCounter < longHabitNameParts[i].Length)
+                        while (longHabitTemp.Length <= habitNameLength && charCounter < longHabitNameParts[i].Length)
                         {
                             longHabitTemp += $"{longHabitName[charCounter]}";
                             charCounter++;
@@ -460,7 +463,7 @@ public class UserInterface
             else
                 Console.Write(longHabit);
 
-            Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (16 - padLength)) + $"{streaksRow}\n");
+            Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (checkRowPadding - padLength)) + $"{streaksRow}\n");
         }
 
         else
@@ -473,7 +476,7 @@ public class UserInterface
             {
                 longHabitTemp = "";
 
-                while (longHabitTemp.Length <= 14 && charCounter < habit.Length)
+                while (longHabitTemp.Length <= habitNameLength && charCounter < habit.Length)
                 {
                     longHabitTemp += $"{longHabitName[charCounter]}";
                     charCounter++;
@@ -483,7 +486,7 @@ public class UserInterface
             } while (longHabit.Length < habit.Length);
 
             Console.Write(longHabit.Remove(longHabit.Length - 1, 1));
-            Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (16 - longHabitTemp.Length)) + $"{streaksRow}\n");
+            Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (checkRowPadding - longHabitTemp.Length)) + $"{streaksRow}\n");
         }
     }
 
