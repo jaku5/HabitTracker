@@ -70,7 +70,7 @@ Once the program is running, you can interact with it using the following option
 
 ### Data Persistence
 
-The program saves your habits and progress in a `habit_data.json` file located in the project directory. This file is automatically updated whenever you make changes.
+The program saves your habits and progress in a `habit_data.json` file. This file is stored in an operating system-specific application data folder. This file is automatically updated whenever you make changes.
 
 ### Exiting the Program
 
