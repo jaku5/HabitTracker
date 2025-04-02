@@ -167,13 +167,23 @@ public class UserInterface
 
             if (!string.IsNullOrWhiteSpace(newHabitName) && !newHabitName.Contains(','))
             {
-                habitTracker.RenameHabit(oldHabitName, newHabitName);
+                if (habitTracker.HabitsToTrack.Contains(newHabitName))
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Habit \"{newHabitName}\" is already on the list. Please choose a different name. Press enter continue.\n");
+                    Console.ReadLine();
+                }
 
-                Console.Clear();
-                Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
-                Console.ReadLine();
+                else
+                {
+                    habitTracker.RenameHabit(oldHabitName, newHabitName);
 
-                validInput = true;
+                    Console.Clear();
+                    Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
+                    Console.ReadLine();
+
+                    validInput = true;
+                }
             }
 
             else
@@ -230,7 +240,6 @@ public class UserInterface
             Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter continue.\n");
             Console.ReadLine();
         }
-
     }
 
     private void MarkHabitDone()
@@ -599,7 +608,7 @@ public class UserInterface
 
         ApplyFirstDayOfWeek(habitTracker.FirstDayOfWeek);
         Console.Clear();
-        
+
         Console.WriteLine($"Selected first day of the week: {habitTracker.FirstDayOfWeek}. Press Enter to continue.");
         Console.ReadLine();
         Console.Clear();
