@@ -47,39 +47,40 @@ public class HabitTracker
         set => _firstDayOfWeek = value;
     }
 
-    public void ModifyHabitList(string habit)
+    public void RemoveHabit(string habit)
     {
-        if (_habitsToTrack.Contains(habit))
+        var itemsToRemove = new HashSet<string>();
+
+        foreach (var habitCompleted in HabitsCompleted)
         {
-            var itemsToRemove = new HashSet<string>();
-
-            foreach (var habitCompleted in HabitsCompleted)
+            if (habitCompleted.StartsWith(habit))
             {
-                if (habitCompleted.StartsWith(habit))
-                {
-                    itemsToRemove.Add(habitCompleted);
-                }
+                itemsToRemove.Add(habitCompleted);
             }
+        }
 
-            foreach (var item in itemsToRemove)
-            {
-                MarkHabitDone(item);
-            }
+        foreach (var item in itemsToRemove)
+        {
+            MarkHabitDone(item);
+        }
 
-            HabitsToTrack.Remove(habit);
+        HabitsToTrack.Remove(habit);
 
-            if (HabitsToTrack.Count == 0)
-            {
-                SaveUserData();
-                LoadUserData();
-            }
+        if (HabitsToTrack.Count == 0)
+        {
+            SaveUserData();
+            LoadUserData();
         }
 
         else
         {
-            _habitsToTrack.Add(habit);
+            SaveUserData();
         }
+    }
 
+    public void AddHabit(string habit)
+    {
+        HabitsToTrack.Add(habit);
         SaveUserData();
     }
 

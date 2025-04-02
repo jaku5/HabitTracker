@@ -13,7 +13,7 @@ public class UserInterface
 
     private const int habitNameLength = 14;
     private const int checkRowPadding = 16;
-    
+
     // User input helper properties
     internal string? userInput { get; set; }
     bool validInput = false;
@@ -48,7 +48,7 @@ public class UserInterface
                 case "1":
 
                     Console.Clear();
-                    
+
                     validInput = true;
 
                     break;
@@ -70,12 +70,12 @@ public class UserInterface
                 case "4":
 
                     Console.Clear();
-                    AddHabit();
+                    AddOrRemoveHabit();
 
                     break;
 
                 case "5":
-                    
+
                     Console.Clear();
                     RenameHabit();
 
@@ -191,7 +191,7 @@ public class UserInterface
         }
     }
 
-    private void AddHabit()
+    private void AddOrRemoveHabit()
     {
         // @TODO Add warning and confimration before deleting data
         Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
@@ -199,9 +199,16 @@ public class UserInterface
 
         if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
         {
-            habitTracker.ModifyHabitList(userInput);
-            habitTracker.SaveUserData();
-            
+            if (habitTracker.HabitsToTrack.Contains(userInput))
+            {
+                habitTracker.RemoveHabit(userInput);
+            }
+
+            else
+            {
+                habitTracker.AddHabit(userInput);
+            }
+
             Console.Clear();
             validInput = true;
         }
@@ -240,7 +247,7 @@ public class UserInterface
                 string habitsCompletedId = selectedHabit + DateOnly.FromDateTime(habitTracker.SelectedDate).ToString("yyyy-MM-dd");
 
                 habitTracker.MarkHabitDone(habitsCompletedId);
-                
+
                 Console.Clear();
                 validInput = true;
             }
@@ -266,7 +273,7 @@ public class UserInterface
 
             if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
             {
-                habitTracker.ModifyHabitList(userInput);
+                habitTracker.AddHabit(userInput);
                 habitTracker.SaveUserData();
                 ShowWeekGrid();
             }
