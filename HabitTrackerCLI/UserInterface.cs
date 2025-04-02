@@ -165,7 +165,7 @@ public class UserInterface
 
             string? newHabitName = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(newHabitName) && !newHabitName.Contains(','))
+            if (HabitTracker.IsValidHabitName(newHabitName))
             {
                 if (habitTracker.HabitsToTrack.Contains(newHabitName))
                 {
@@ -206,7 +206,7 @@ public class UserInterface
         Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
         userInput = Console.ReadLine();
 
-        if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
+        if (HabitTracker.IsValidHabitName(userInput))
         {
             if (habitTracker.HabitsToTrack.Contains(userInput))
             {
@@ -291,7 +291,7 @@ public class UserInterface
 
             userInput = Console.ReadLine();
 
-            if (userInput != null && userInput != "" && !userInput.Contains(',') && !userInput.All(char.IsWhiteSpace))
+            if (HabitTracker.IsValidHabitName(userInput))
             {
                 habitTracker.AddHabit(userInput);
                 habitTracker.SaveUserData();
@@ -303,7 +303,7 @@ public class UserInterface
                 Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
             }
 
-        } while (userInput == null || userInput == "" || userInput.Contains(',') || userInput.All(char.IsWhiteSpace));
+        } while (HabitTracker.IsValidHabitName(userInput));
     }
 
     public void ShowWeekGrid()

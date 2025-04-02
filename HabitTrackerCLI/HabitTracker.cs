@@ -204,6 +204,11 @@ public class HabitTracker
         }
     }
 
+    public static bool IsValidHabitName(string habitName)
+    {
+        return !string.IsNullOrWhiteSpace(habitName) && !habitName.Contains(',');
+    }
+    
     public int CalculateCurrentStreak(string habit)
     {
         int currentStreak = 0;
