@@ -70,7 +70,7 @@ public class UserInterface
                 case "4":
 
                     Console.Clear();
-                    AddOrRemoveHabit();
+                    ModifyHabitList();
 
                     break;
 
@@ -191,9 +191,8 @@ public class UserInterface
         }
     }
 
-    private void AddOrRemoveHabit()
+    private void ModifyHabitList()
     {
-        // @TODO Add warning and confimration before deleting data
         Console.WriteLine($"Type habit name you want to add and press enter. Type exisitng habit name to delete it from the list. This deletes all habit track data as well.\n");
         userInput = Console.ReadLine();
 
@@ -201,7 +200,19 @@ public class UserInterface
         {
             if (habitTracker.HabitsToTrack.Contains(userInput))
             {
-                habitTracker.RemoveHabit(userInput);
+                Console.Clear();
+                Console.WriteLine($"Are you sure you want to remove habit \"{userInput}\" and all its track data? Type habit name again to confirm or press enter to cancel.");
+                string? deleteConfirm = Console.ReadLine();
+
+                if (deleteConfirm == userInput)
+                    habitTracker.RemoveHabit(userInput);
+
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Delete operation cancelled. Press enter to continue.");
+                    Console.ReadLine();
+                }
             }
 
             else
