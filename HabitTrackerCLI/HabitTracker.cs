@@ -206,7 +206,7 @@ public class HabitTracker
 
     public static bool IsValidHabitName(string? habitName)
     {
-        return !string.IsNullOrWhiteSpace(habitName) && !habitName.Contains(',');
+        return !string.IsNullOrWhiteSpace(habitName) && !habitName.Contains(',') && habitName != null;
     }
     
     public int CalculateCurrentStreak(string habit)
