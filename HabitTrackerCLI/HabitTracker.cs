@@ -21,13 +21,13 @@ public class HabitTracker
     public List<string> HabitsToTrack
     {
         get => _habitsToTrack;
-        set => _habitsToTrack = value;
+        private set => _habitsToTrack = value;
     }
 
     public HashSet<string> HabitsCompleted
     {
         get => _habitsCompleted;
-        set => _habitsCompleted = value;
+        private set => _habitsCompleted = value;
     }
 
     public static DateTime CurrentDate
