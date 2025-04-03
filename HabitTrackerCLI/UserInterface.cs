@@ -102,10 +102,7 @@ public class UserInterface
     private void ReorderHabit()
     {
         Console.WriteLine("Select the habit you want to reorder:");
-        for (int i = 0; i < habitTracker.HabitsToTrack.Count; i++)
-        {
-            Console.WriteLine($"{i + 1}. {habitTracker.HabitsToTrack[i]}");
-        }
+        DisplayHabitList();
 
         userInput = Console.ReadLine();
 
@@ -146,13 +143,18 @@ public class UserInterface
         }
     }
 
-    private void RenameHabit()
+    private void DisplayHabitList()
     {
-        Console.WriteLine("Select the habit you want to rename:");
         for (int i = 0; i < habitTracker.HabitsToTrack.Count; i++)
         {
             Console.WriteLine($"{i + 1}. {habitTracker.HabitsToTrack[i]}");
         }
+    }
+
+    private void RenameHabit()
+    {
+        Console.WriteLine("Select the habit you want to rename:");
+        DisplayHabitList();
 
         userInput = Console.ReadLine();
 
