@@ -50,7 +50,7 @@ catch (IOException ex) when (ex.InnerException is IOException)
     Console.ReadLine();
 }
 
-catch (InvalidDataException ex) when (ex.InnerException is JsonException)
+catch (UnauthorizedAccessException ex) when (ex.InnerException is UnauthorizedAccessException)
 {
     Console.Clear();
     Console.Write($"Error: {ex.Message} ");
