@@ -204,7 +204,7 @@ public class HabitTracker
         }
     }
 
-    public static bool IsValidHabitName(string habitName)
+    public static bool IsValidHabitName(string? habitName)
     {
         return !string.IsNullOrWhiteSpace(habitName) && !habitName.Contains(',');
     }
