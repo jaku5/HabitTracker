@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace HabitTrackerCLI;
+namespace HabitTrackerLibrary;
 
 public class HabitTracker
 {

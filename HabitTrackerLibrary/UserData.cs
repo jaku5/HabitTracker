@@ -1,4 +1,4 @@
-namespace HabitTrackerCLI;
+namespace HabitTrackerLibrary;
 
 public class UserData
 {

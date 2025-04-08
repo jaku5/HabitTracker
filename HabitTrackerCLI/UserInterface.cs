@@ -1,4 +1,4 @@
-namespace HabitTrackerCLI;
+using HabitTrackerLibrary;
 
 public class UserInterface
 {

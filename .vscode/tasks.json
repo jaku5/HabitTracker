@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/habit-tracker-cli.sln",
+                "${workspaceFolder}/HabitTracker.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/habit-tracker-cli.sln",
+                "${workspaceFolder}/HabitTracker.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/habit-tracker-cli.sln"
+                "${workspaceFolder}/HabitTracker.sln"
             ],
             "problemMatcher": "$msCompile"
         }
