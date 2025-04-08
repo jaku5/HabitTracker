@@ -21,13 +21,13 @@ A simple command-line application to help you track your habits and monitor your
 
 1. Clone or download this repository to your local machine.
 2. Open a terminal and navigate to the project directory.
-3. Build the project using the following command:
+3. Build the solution using the following command:
    ```sh
-   dotnet build
+   dotnet build HabitTracker.sln
    ```
 4. Run the program using:
    ```sh
-   dotnet run
+   dotnet run --project HabitTrackerCLI/HabitTrackerCLI.csproj
    ```
 
 ### Interacting with the Program
@@ -80,7 +80,7 @@ To exit the program, type `exit` in the grid view.
 
 1. Start the program:
    ```sh
-   dotnet run
+   dotnet run --project HabitTrackerCLI/HabitTrackerCLI.csproj
    ```
 2. Add a new habit:
    - Type the name of the habit when prompted.
