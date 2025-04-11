@@ -292,20 +292,23 @@ public class UserInterface
             Console.WriteLine("Welcome to Habit Tracker. To start tracking, add your first habit. Type the name of the habit you want to track and press enter:");
 
             userInput = Console.ReadLine();
+            Console.Clear();
 
             if (HabitTracker.IsValidHabitName(userInput))
             {
                 habitTracker.AddHabit(userInput);
                 habitTracker.SaveUserData();
+                Console.Clear();
                 ShowWeekGrid();
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma.\n");
+                Console.WriteLine($"Invalid habit name \"{userInput}\". Name cannot be empty and cannot contain a comma. Press enter to continue.");
+                Console.ReadLine();
             }
 
-        } while (HabitTracker.IsValidHabitName(userInput));
+        } while (!HabitTracker.IsValidHabitName(userInput));
     }
 
     public void ShowWeekGrid()
