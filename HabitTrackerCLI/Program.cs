@@ -16,6 +16,8 @@ try
 
     do
     {
+        Console.Clear();
+
         if (habitTracker.LoadUserData())
             userInterface.ShowWeekGrid();
         else
