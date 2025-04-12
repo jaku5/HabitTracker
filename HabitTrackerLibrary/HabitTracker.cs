@@ -134,7 +134,7 @@ public class HabitTracker
                 string jsonData = File.ReadAllText(_userDataFilePath);
                 var userData = JsonSerializer.Deserialize<UserData>(jsonData);
 
-                if (userData.HabitsToTrack.Count > 0)
+                if (userData?.HabitsToTrack.Count > 0)
                 {
                     _habitsToTrack = userData.HabitsToTrack;
                     _habitsCompleted = userData.HabitsCompleted;

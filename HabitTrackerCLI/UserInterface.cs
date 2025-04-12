@@ -169,7 +169,7 @@ public class UserInterface
 
             if (HabitTracker.IsValidHabitName(newHabitName))
             {
-                if (habitTracker.HabitsToTrack.Contains(newHabitName))
+                if (habitTracker.HabitsToTrack.Contains(newHabitName!))
                 {
                     Console.Clear();
                     Console.WriteLine($"Habit \"{newHabitName}\" is already on the list. Please choose a different name. Press enter continue.\n");
@@ -178,7 +178,7 @@ public class UserInterface
 
                 else
                 {
-                    habitTracker.RenameHabit(oldHabitName, newHabitName);
+                    habitTracker.RenameHabit(oldHabitName, newHabitName!);
 
                     Console.Clear();
                     Console.WriteLine($"Habit \"{oldHabitName}\" has been renamed to \"{newHabitName}\". Press enter to continue.");
@@ -210,14 +210,14 @@ public class UserInterface
 
         if (HabitTracker.IsValidHabitName(userInput))
         {
-            if (habitTracker.HabitsToTrack.Contains(userInput))
+            if (habitTracker.HabitsToTrack.Contains(userInput!))
             {
                 Console.Clear();
                 Console.WriteLine($"Are you sure you want to remove habit \"{userInput}\" and all its track data? Type habit name again to confirm or press enter to cancel.");
                 string? deleteConfirm = Console.ReadLine();
 
                 if (deleteConfirm == userInput)
-                    habitTracker.RemoveHabit(userInput);
+                    habitTracker.RemoveHabit(userInput!);
 
                 else
                 {
@@ -229,7 +229,7 @@ public class UserInterface
 
             else
             {
-                habitTracker.AddHabit(userInput);
+                habitTracker.AddHabit(userInput!);
             }
 
             Console.Clear();
@@ -296,7 +296,7 @@ public class UserInterface
 
             if (HabitTracker.IsValidHabitName(userInput))
             {
-                habitTracker.AddHabit(userInput);
+                habitTracker.AddHabit(userInput!);
                 habitTracker.SaveUserData();
                 Console.Clear();
                 ShowWeekGrid();
