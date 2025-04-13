@@ -77,4 +77,15 @@ public static class HabitTrackerService
         
         ReloadHabits();
     }
+
+        public static void Delete(int id)
+    {
+        var habit = Get(id);
+        if(habit is null)
+            return;
+
+        habitTracker.RemoveHabit(habit.Name);
+
+        ReloadHabits();
+    }
 }

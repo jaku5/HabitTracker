@@ -28,3 +28,7 @@ Content-Type: application/json
 }
 
 ###
+
+DELETE {{HabitTrackerWebApp_HostAddress}}/habits/3
+
+###

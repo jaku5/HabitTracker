@@ -52,5 +52,18 @@ namespace HabitTrackerWebApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var habit = HabitTrackerService.Get(id);
+
+            if (habit is null)
+                return NotFound();
+
+            HabitTrackerService.Delete(id);
+
+            return NoContent();
+        }
     }
 }
