@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{HabitTrackerWebApp_HostAddress}}/habits/Test
+GET {{HabitTrackerWebApp_HostAddress}}/habits/3
 Accept: application/json
 
 ###
@@ -14,7 +14,17 @@ POST {{HabitTrackerWebApp_HostAddress}}/habits/
 Content-Type: application/json
 
 {
-    "name": "YoYoyy"
+    "name": "NewHabit"
+}
+
+###
+
+PUT {{HabitTrackerWebApp_HostAddress}}/habits/3
+Content-Type: application/json
+
+{
+    "id": 3,
+    "name": "NewHabitName"
 }
 
 ###

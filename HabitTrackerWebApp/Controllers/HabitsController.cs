@@ -9,19 +9,14 @@ namespace HabitTrackerWebApp.Controllers
     [ApiController]
     public class HabitsController : ControllerBase
     {
-        public HabitsController()
-        {
-            HabitTrackerService.Initialize();
-        }
-
         [HttpGet]
         public ActionResult<List<HabitToTrack>> GetAll() =>
             HabitTrackerService.GetAll();
 
-        [HttpGet("{name}")]
-        public ActionResult<HabitToTrack> Get(string name)
+        [HttpGet("{id}")]
+        public ActionResult<HabitToTrack> Get(int id)
         {
-            var habit = HabitTrackerService.Get(name);
+            var habit = HabitTrackerService.Get(id);
 
             if (habit == null)
                 return NotFound();
@@ -35,10 +30,27 @@ namespace HabitTrackerWebApp.Controllers
             if (!HabitTrackerService.IsValidHabitName(habitToTrack))
                 return BadRequest("Invalid habit name.");
 
-            var newHabit = new HabitToTrack { Name = habitToTrack.Name };
-            HabitTrackerService.Add(newHabit);
+            HabitTrackerService.Add(habitToTrack);
 
-            return CreatedAtAction(nameof(Get), new { name = newHabit.Name }, newHabit);
+            return CreatedAtAction(nameof(Get), new { id = habitToTrack.Id }, habitToTrack);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, HabitToTrack habitToTrack)
+        {
+            if (id != habitToTrack.Id)
+                return BadRequest();
+
+            var existingHabit = HabitTrackerService.Get(id);
+            if (existingHabit is null)
+                return NotFound();
+
+            if (!HabitTrackerService.IsValidHabitName(habitToTrack))
+                return BadRequest("Invalid habit name.");
+
+            HabitTrackerService.Update(existingHabit, habitToTrack);
+
+            return NoContent();
         }
     }
 }

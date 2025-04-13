@@ -8,15 +8,23 @@ public static class HabitTrackerService
 {
     static string userDataFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HabitTrackerCLI", "habit_data.json");
     private static readonly HabitTracker habitTracker;
+
+    static List<HabitToTrack> HabitsToTrack { get; set; }
+
+    static int id = 1;
+
     static HabitTrackerService()
     {
         habitTracker = new HabitTracker(userDataFilePath);
+        HabitsToTrack = GetAllHabitsAsObjects();
     }
 
     public static List<HabitToTrack> GetAllHabitsAsObjects()
     {
+        Initialize();
+
         return habitTracker.HabitsToTrack
-            .Select(habit => new HabitToTrack { Name = habit })
+            .Select(habit => new HabitToTrack { Name = habit, Id = id++ })
             .ToList();
     }
 
@@ -29,23 +37,44 @@ public static class HabitTrackerService
         }
     }
 
+    public static void ReloadHabits()
+    {
+        id = 1;
+        HabitsToTrack = GetAllHabitsAsObjects();
+    }
+
     public static bool IsValidHabitName(HabitToTrack habitToTrack)
     {
         return HabitTracker.IsValidHabitName(habitToTrack.Name);
     }
 
-    public static List<HabitToTrack> GetAll()
+    public static List<HabitToTrack>? GetAll()
     {
-        return GetAllHabitsAsObjects();
+        return HabitsToTrack;
     }
 
-    public static HabitToTrack? Get(string name)
+    public static HabitToTrack? Get(int id)
     {
-        return GetAllHabitsAsObjects().FirstOrDefault(h => h.Name == name);
+        return HabitsToTrack?.FirstOrDefault(h => h.Id == id);
     }
 
     public static void Add(HabitToTrack habitToTrack)
     {
+        habitToTrack.Id = id++;
         habitTracker.AddHabit(habitToTrack.Name!);
+        
+        ReloadHabits();
+    }
+
+    public static void Update(HabitToTrack habitToRename, HabitToTrack habitToTrack)
+    {
+        var index = HabitsToTrack.FindIndex(h => h.Id == habitToTrack.Id);
+        if (index == -1)
+            return;
+
+        HabitsToTrack[index] = habitToTrack;
+        habitTracker.RenameHabit(habitToRename.Name, habitToTrack.Name);
+        
+        ReloadHabits();
     }
 }
