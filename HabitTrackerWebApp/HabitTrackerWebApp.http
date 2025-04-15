@@ -1,16 +1,16 @@
 @HabitTrackerWebApp_HostAddress = http://localhost:5189
 
-GET {{HabitTrackerWebApp_HostAddress}}/habits/
+GET {{HabitTrackerWebApp_HostAddress}}/api/habits/
 Accept: application/json
 
 ###
 
-GET {{HabitTrackerWebApp_HostAddress}}/habits/3
+GET {{HabitTrackerWebApp_HostAddress}}/api/habits/3
 Accept: application/json
 
 ###
 
-POST {{HabitTrackerWebApp_HostAddress}}/habits/
+POST {{HabitTrackerWebApp_HostAddress}}/api/habits/
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{HabitTrackerWebApp_HostAddress}}/habits/3
+PUT {{HabitTrackerWebApp_HostAddress}}/api/habits/3
 Content-Type: application/json
 
 {
@@ -29,6 +29,6 @@ Content-Type: application/json
 
 ###
 
-DELETE {{HabitTrackerWebApp_HostAddress}}/habits/3
+DELETE {{HabitTrackerWebApp_HostAddress}}/api/habits/3
 
 ###

@@ -1,0 +1,23 @@
+@using HabitTrackerWebApp.Models
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model List<HabitToTrack>
+
+<h1>Habit Tracker</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var habit in Model)
+        {
+            <tr>
+                <td>@habit.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -62,7 +62,7 @@ public static class HabitTrackerService
     {
         habitToTrack.Id = id++;
         habitTracker.AddHabit(habitToTrack.Name!);
-        
+
         ReloadHabits();
     }
 
@@ -74,14 +74,14 @@ public static class HabitTrackerService
 
         HabitsToTrack[index] = habitToTrack;
         habitTracker.RenameHabit(habitToRename.Name, habitToTrack.Name);
-        
+
         ReloadHabits();
     }
 
-        public static void Delete(int id)
+    public static void Delete(int id)
     {
         var habit = Get(id);
-        if(habit is null)
+        if (habit is null)
             return;
 
         habitTracker.RemoveHabit(habit.Name);
