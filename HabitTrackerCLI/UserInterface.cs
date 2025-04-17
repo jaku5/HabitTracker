@@ -108,7 +108,7 @@ public class UserInterface
 
         if (int.TryParse(userInput, out int reorderIndex) && reorderIndex > 0 && reorderIndex <= habitTracker.HabitsToTrack.Count)
         {
-            string habitName = habitTracker.HabitsToTrack[reorderIndex - 1];
+            string habitName = habitTracker.HabitsToTrack[reorderIndex - 1].Name;
 
             Console.Clear();
             Console.WriteLine($"Enter the new position for the habit \"{habitName}\":");
@@ -116,8 +116,10 @@ public class UserInterface
 
             if (int.TryParse(newHabitListPosition, out int newHabitIndex) && newHabitIndex > 0 && newHabitIndex <= habitTracker.HabitsToTrack.Count)
             {
+                var habit = habitTracker.HabitsToTrack.FirstOrDefault(h => h.Name == habitName);
+
                 habitTracker.HabitsToTrack.RemoveAt(reorderIndex - 1);
-                habitTracker.HabitsToTrack.Insert(newHabitIndex - 1, habitName);
+                habitTracker.HabitsToTrack.Insert(newHabitIndex - 1, habit);
 
                 habitTracker.SaveUserData();
 
@@ -147,7 +149,7 @@ public class UserInterface
     {
         for (int i = 0; i < habitTracker.HabitsToTrack.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {habitTracker.HabitsToTrack[i]}");
+            Console.WriteLine($"{i + 1}. {habitTracker.HabitsToTrack[i].Name}");
         }
     }
 
@@ -160,7 +162,7 @@ public class UserInterface
 
         if (int.TryParse(userInput, out int renameIndex) && renameIndex > 0 && renameIndex <= habitTracker.HabitsToTrack.Count)
         {
-            string oldHabitName = habitTracker.HabitsToTrack[renameIndex - 1];
+            string oldHabitName = habitTracker.HabitsToTrack[renameIndex - 1].Name;
 
             Console.Clear();
             Console.WriteLine($"Enter the new name for the habit \"{oldHabitName}\":");
@@ -169,7 +171,8 @@ public class UserInterface
 
             if (HabitTracker.IsValidHabitName(newHabitName))
             {
-                if (habitTracker.HabitsToTrack.Contains(newHabitName!))
+                var habit = habitTracker.HabitsToTrack.FirstOrDefault(h => h.Name == newHabitName);
+                if (habitTracker.HabitsToTrack.Contains(habit!))
                 {
                     Console.Clear();
                     Console.WriteLine($"Habit \"{newHabitName}\" is already on the list. Please choose a different name. Press enter continue.\n");
@@ -210,7 +213,8 @@ public class UserInterface
 
         if (HabitTracker.IsValidHabitName(userInput))
         {
-            if (habitTracker.HabitsToTrack.Contains(userInput!))
+            var habit = habitTracker.HabitsToTrack.FirstOrDefault(h => h.Name == userInput);
+            if (habitTracker.HabitsToTrack.Contains(habit!))
             {
                 Console.Clear();
                 Console.WriteLine($"Are you sure you want to remove habit \"{userInput}\" and all its track data? Type habit name again to confirm or press enter to cancel.");
@@ -255,20 +259,16 @@ public class UserInterface
 
         else
         {
-            for (int i = 0; i < habitTracker.HabitsToTrack.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {habitTracker.HabitsToTrack[i]}");
-            }
+            DisplayHabitList();
 
             Console.WriteLine($"\nEnter the number corresponding to the habit (selected date is {habitTracker.SelectedDate.DayOfWeek} {DateOnly.FromDateTime(habitTracker.SelectedDate)}):");
             userInput = Console.ReadLine();
 
             if (int.TryParse(userInput, out int habitIndex) && habitIndex > 0 && habitIndex <= habitTracker.HabitsToTrack.Count)
             {
-                string selectedHabit = habitTracker.HabitsToTrack[habitIndex - 1];
-                string habitsCompletedId = selectedHabit + DateOnly.FromDateTime(habitTracker.SelectedDate).ToString("yyyy-MM-dd");
+                Habit selectedHabit = habitTracker.HabitsToTrack[habitIndex - 1];
 
-                habitTracker.MarkHabitDone(habitsCompletedId);
+                habitTracker.MarkHabitDone(selectedHabit.Name, DateOnly.FromDateTime(habitTracker.SelectedDate));
 
                 Console.Clear();
                 validInput = true;
@@ -328,10 +328,10 @@ public class UserInterface
         for (int i = 0; i < daysOfWeek.Length; i++)
         {
             string currentWeekDay = $"{daysOfWeek[i].ToString()} ";
-            string currentWeekDayDate = $"{CalculateGridDates(habitTracker.HabitsToTrack[0], i).ToString("dd MMM")} ";
+            string currentWeekDayDate = $"{CalculateGridDates(habitTracker.HabitsToTrack[0].Name, i).ToString("dd MMM")} ";
 
             if (i != 0)
-                currentWeekDayDate = $"{CalculateGridDates(habitTracker.HabitsToTrack[0], i).ToString("dd MMM").PadLeft(daysOfWeek[i - 1].ToString().Length)} ";
+                currentWeekDayDate = $"{CalculateGridDates(habitTracker.HabitsToTrack[0].Name, i).ToString("dd MMM").PadLeft(daysOfWeek[i - 1].ToString().Length)} ";
 
             weekGridHeader += currentWeekDay;
             weekGridHeaderDates += currentWeekDayDate;
@@ -342,25 +342,23 @@ public class UserInterface
 
     void ShowGridBody()
     {
-        foreach (string habit in habitTracker.HabitsToTrack)
+        foreach (var habit in habitTracker.HabitsToTrack)
         {
-            int currentStreak = habitTracker.CalculateCurrentStreak(habit);
-            int recordStreak = habitTracker.CalculateRecordStreak(habit);
+            int currentStreak = habitTracker.CalculateCurrentStreak(habit.Name);
+            int recordStreak = habitTracker.CalculateRecordStreak(habit.Name);
 
             string habitCheckRow = "";
             string streaksRow = "";
-            string habitEntryId = "";
 
             for (int i = 0; i < daysOfWeek.Length; i++)
             {
-                string currentWeekDay = "";
-                DateOnly habitDate = CalculateGridDates(habit, i);
+                string currentWeekDay;
+                DateOnly habitDate = CalculateGridDates(habit.Name, i);
                 string checkIcon = "- [x] ";
                 string uncheckIcon = "- [ ] ";
                 string icon = uncheckIcon;
-                habitEntryId = $"{habit}{habitDate.ToString("yyyy-MM-dd")}";
 
-                if (habitTracker.HabitsCompleted.Contains(habitEntryId))
+                if (habit.CompletionDates.Contains(habitDate))
                 {
                     icon = checkIcon;
                 }
@@ -389,15 +387,15 @@ public class UserInterface
                 }
             }
 
-            if (habit.Length > habitNameLength)
+            if (habit.Name.Length > habitNameLength)
             {
-                FormatLongHabitName(habit, habitCheckRow, streaksRow);
+                FormatLongHabitName(habit.Name, habitCheckRow, streaksRow);
             }
 
             else
             {
-                Console.Write($"{habit}");
-                Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (checkRowPadding - habit.Length)) + $"{streaksRow}\n");
+                Console.Write($"{habit.Name}");
+                Console.WriteLine($"{habitCheckRow}".PadLeft(habitCheckRow.Length + (checkRowPadding - habit.Name.Length)) + $"{streaksRow}\n");
             }
         }
     }
@@ -460,7 +458,7 @@ public class UserInterface
                 else
                 {
                     char[] longHabitName = longHabitNameParts[i].ToCharArray();
-                    string longHabitTemp = "";
+                    string longHabitTemp;
                     string longHabitPart = "";
 
                     int charCounter = 0;
@@ -501,7 +499,7 @@ public class UserInterface
         else
         {
             char[] longHabitName = habit.ToCharArray();
-            string longHabitTemp = "";
+            string longHabitTemp;
             int charCounter = 0;
 
             do
@@ -524,8 +522,8 @@ public class UserInterface
 
     DateOnly CalculateGridDates(string habit, int weekDay)
     {
-        DateOnly habitGridEntryDate = new DateOnly();
-        int dateDaysDifference = 0;
+        DateOnly habitGridEntryDate;
+        int dateDaysDifference;
 
         if (daysOfWeek[weekDay] == habitTracker.SelectedDate.DayOfWeek)
         {
@@ -535,7 +533,7 @@ public class UserInterface
         else
         {
             dateDaysDifference = weekDay - Array.IndexOf(daysOfWeek, habitTracker.SelectedDate.DayOfWeek);
-            DateTime habitEntryCalculatedDate = new DateTime();
+            DateTime habitEntryCalculatedDate;
 
             habitEntryCalculatedDate = habitTracker.SelectedDate.AddDays(dateDaysDifference);
             habitGridEntryDate = DateOnly.FromDateTime(habitEntryCalculatedDate);
@@ -621,7 +619,7 @@ public class UserInterface
 
     void ApplyFirstDayOfWeek(DayOfWeek customFirstDay)
     {
-        int dayOfWeekOffset = 0;
+        int dayOfWeekOffset;
 
         if (customFirstDay != DayOfWeek.Sunday)
         {

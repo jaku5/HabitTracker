@@ -5,8 +5,7 @@ namespace HabitTrackerLibrary;
 public class HabitTracker
 {
     private readonly string _userDataFilePath;
-    private List<string> _habitsToTrack = new List<string>();
-    private HashSet<string> _habitsCompleted = new HashSet<string>();
+    private List<Habit> _habitsToTrack = new List<Habit>();
 
     private static DateTime _currentDate = DateTime.Now;
     private DateTime _selectedDate = _currentDate;
@@ -18,16 +17,10 @@ public class HabitTracker
         _userDataFilePath = userDataFilePath;
     }
 
-    public List<string> HabitsToTrack
+    public List<Habit> HabitsToTrack
     {
         get => _habitsToTrack;
         private set => _habitsToTrack = value;
-    }
-
-    public HashSet<string> HabitsCompleted
-    {
-        get => _habitsCompleted;
-        private set => _habitsCompleted = value;
     }
 
     public static DateTime CurrentDate
@@ -47,23 +40,9 @@ public class HabitTracker
         set => _firstDayOfWeek = value;
     }
 
-    public void RemoveHabit(string habit)
+    public void RemoveHabit(string habitName)
     {
-        var itemsToRemove = new HashSet<string>();
-
-        foreach (var habitCompleted in HabitsCompleted)
-        {
-            if (habitCompleted.StartsWith(habit))
-            {
-                itemsToRemove.Add(habitCompleted);
-            }
-        }
-
-        foreach (var item in itemsToRemove)
-        {
-            MarkHabitDone(item);
-        }
-
+        var habit = HabitsToTrack.FirstOrDefault(h => h.Name == habitName);
         HabitsToTrack.Remove(habit);
 
         if (HabitsToTrack.Count == 0)
@@ -78,48 +57,37 @@ public class HabitTracker
         }
     }
 
-    public void AddHabit(string habit)
+    public void AddHabit(string habitName)
     {
-        HabitsToTrack.Add(habit);
+        //@TODO: Check for duplicate habit names
+        HabitsToTrack.Add(new Habit { Name = habitName });
         SaveUserData();
     }
 
-    public void MarkHabitDone(string habitEntryId)
+    public void MarkHabitDone(string habitName, DateOnly date)
     {
-        if (HabitsCompleted.Contains(habitEntryId))
-            HabitsCompleted.Remove(habitEntryId);
+        var habit = HabitsToTrack.FirstOrDefault(h => h.Name == habitName);
 
-        else
-            HabitsCompleted.Add(habitEntryId);
+        if (habit != null)
+        {
+            if (habit.CompletionDates.Contains(date))
+                habit.CompletionDates.Remove(date);
 
-        SaveUserData();
+            else
+                habit.CompletionDates.Add(date);
+
+            SaveUserData();
+        }
     }
 
     public void RenameHabit(string oldHabitName, string newHabitName)
     {
-        int habitIndex = HabitsToTrack.IndexOf(oldHabitName);
+        var habit = HabitsToTrack.FirstOrDefault(h => h.Name == oldHabitName);
+        int habitIndex = HabitsToTrack.IndexOf(habit);
         if (habitIndex != -1)
         {
-            HabitsToTrack[habitIndex] = newHabitName;
+            HabitsToTrack[habitIndex].Name = newHabitName;
         }
-
-        var updatedHabits = new HashSet<string>();
-
-        foreach (var habitCompleted in HabitsCompleted)
-        {
-            if (habitCompleted.StartsWith(oldHabitName))
-            {
-                string datePart = habitCompleted.Substring(oldHabitName.Length);
-                updatedHabits.Add(newHabitName + datePart);
-            }
-
-            else
-            {
-                updatedHabits.Add(habitCompleted);
-            }
-        }
-
-        HabitsCompleted = updatedHabits;
 
         SaveUserData();
     }
@@ -137,7 +105,6 @@ public class HabitTracker
                 if (userData?.HabitsToTrack.Count > 0)
                 {
                     _habitsToTrack = userData.HabitsToTrack;
-                    _habitsCompleted = userData.HabitsCompleted;
                     _firstDayOfWeek = userData.FirstDayOfWeek;
 
                     dataLoaded = true;
@@ -180,7 +147,6 @@ public class HabitTracker
             var userData = new UserData
             {
                 HabitsToTrack = _habitsToTrack,
-                HabitsCompleted = _habitsCompleted,
                 FirstDayOfWeek = _firstDayOfWeek
             };
 
@@ -208,50 +174,18 @@ public class HabitTracker
     {
         return !string.IsNullOrWhiteSpace(habitName) && !habitName.Contains(',') && habitName != null;
     }
-    
-    public int CalculateCurrentStreak(string habit)
+
+    public int CalculateCurrentStreak(string habitName)
     {
-        int currentStreak = 0;
-        DateOnly currentHabitDate = DateOnly.FromDateTime(CurrentDate);
-        string currentHabitId = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
+        var habit = HabitsToTrack.FirstOrDefault(h => h.Name == habitName);
 
-        while (HabitsCompleted.Contains(currentHabitId))
-        {
-            currentHabitDate = currentHabitDate.AddDays(-1);
-            currentHabitId = habit + currentHabitDate.ToString("yyyy-MM-dd");
-            currentStreak++;
-        }
-
-        return currentStreak;
+        return habit.CalculateCurrentStreak();
     }
 
-    public int CalculateRecordStreak(string habit)
+    public int CalculateRecordStreak(string habitName)
     {
-        int recordStreak = 0;
-
-        foreach (string habitCompletedId in HabitsCompleted)
-        {
-            DateOnly currentHabitDate;
-
-            int tempRecordStreak = 0;
-
-            if (habitCompletedId.ToString().Contains(habit))
-            {
-                DateOnly.TryParse(habitCompletedId.Substring(habit.Length), out currentHabitDate);
-                string currentHabitId = $"{habit}{currentHabitDate.ToString("yyyy-MM-dd")}";
-
-                while (HabitsCompleted.Contains(currentHabitId))
-                {
-                    currentHabitDate = currentHabitDate.AddDays(-1);
-                    currentHabitId = habit + currentHabitDate.ToString("yyyy-MM-dd");
-                    tempRecordStreak++;
-                }
-
-                if (tempRecordStreak > recordStreak)
-                    recordStreak = tempRecordStreak;
-            }
-        }
-
-        return recordStreak;
+        var habit = HabitsToTrack.FirstOrDefault(h => h.Name == habitName);
+        
+        return habit.CalculateRecordStreak();
     }
 }
