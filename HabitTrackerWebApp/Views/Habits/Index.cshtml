@@ -9,7 +9,14 @@
 <table>
     <thead>
         <tr>
-            <th>Name</th>
+            <th></th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).ToString("dd MMM")</th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(1).ToString("dd MMM")</th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(2).ToString("dd MMM")</th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(3).ToString("dd MMM")</th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(4).ToString("dd MMM")</th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(5).ToString("dd MMM")</th>
+            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(6).ToString("dd MMM")</th>
         </tr>
     </thead>
     <tbody>
@@ -17,6 +24,13 @@
         {
             <tr>
                 <td>@habit.Name</td>
+                <td>- [ ]</td>
+                <td>- [ ]</td>
+                <td>- [ ]</td>
+                <td>- [ ]</td>
+                <td>- [ ]</td>
+                <td>- [ ]</td>
+                <td>- [ ]</td>
             </tr>
         }
     </tbody>
