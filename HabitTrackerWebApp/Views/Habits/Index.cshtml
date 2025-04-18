@@ -1,22 +1,48 @@
 @using HabitTrackerWebApp.Models
+@using System.Globalization
+@model List<HabitToTrack>
+
 @{
     ViewData["Title"] = "Index";
 }
 
-@model List<HabitToTrack>
+@{
+    var selectedDate = (DateTime)ViewBag.SelectedDate;
+    var firstDayOfWeek = (DayOfWeek)ViewBag.FirstDayOfWeek;
+    var weekRange = (List<DateTime>)ViewBag.WeekRange;
+}
 
 <h1>Habit Tracker</h1>
+<form method="get" action="/Habits">
+    <label for="selectedDate">Select Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate"
+        value="@DateOnly.FromDateTime((DateTime)ViewBag.SelectedDate).ToString("yyyy-MM-dd")" />
+
+    <label for="firstDayOfWeek">First Day of Week:</label>
+    <select id="firstDayOfWeek" name="firstDayOfWeek">
+        @foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        {
+            <option value="@day" @(day == firstDayOfWeek ? "selected" : "")>@day</option>
+        }
+    </select>
+
+    <button type="submit">Go</button>
+</form>
 <table>
     <thead>
         <tr>
-            <th></th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).ToString("dd MMM")</th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(1).ToString("dd MMM")</th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(2).ToString("dd MMM")</th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(3).ToString("dd MMM")</th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(4).ToString("dd MMM")</th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(5).ToString("dd MMM")</th>
-            <th>@DateOnly.FromDateTime(DateTime.Now).AddDays(6).ToString("dd MMM")</th>
+            <th>
+            </th>
+            @foreach (var date in weekRange)
+            {
+                <th>@date.DayOfWeek<br>@date.ToString("dd MMM")</th>
+            }
+            <th>
+                Current
+            </th>
+            <th>
+                Record
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -24,13 +50,20 @@
         {
             <tr>
                 <td>@habit.Name</td>
-                <td>- [ ]</td>
-                <td>- [ ]</td>
-                <td>- [ ]</td>
-                <td>- [ ]</td>
-                <td>- [ ]</td>
-                <td>- [ ]</td>
-                <td>- [ ]</td>
+                @foreach (var date in weekRange)
+                {
+                    <td>
+                        <input type="checkbox" name="completedHabit" value="@($"{habit.Name}{date:yyyy-MM-dd}")"
+                            data-habit-id="@habit.Id" data-date="@date.ToString("yyyy-MM-dd")"
+                            @(habit.CompletionDates.Contains(DateOnly.FromDateTime(date)) ? "checked" : "") />
+                    </td>
+                }
+                <td>
+                    @habit.CurrentStreak
+                </td>
+                <td>
+                    @habit.RecordStreak
+                </td>
             </tr>
         }
     </tbody>

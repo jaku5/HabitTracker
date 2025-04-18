@@ -24,7 +24,7 @@ public static class HabitTrackerService
         Initialize();
 
         return habitTracker.HabitsToTrack
-            .Select(habit => new HabitToTrack { Id = id++, Name = habit.Name, CompletionDates = habit.CompletionDates })
+            .Select(habit => new HabitToTrack { Id = id++, Name = habit.Name, CompletionDates = habit.CompletionDates, CurrentStreak = habit.CalculateCurrentStreak(), RecordStreak = habit.CalculateRecordStreak() })
             .ToList();
     }
 
