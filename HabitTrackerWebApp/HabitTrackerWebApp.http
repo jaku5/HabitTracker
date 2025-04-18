@@ -19,6 +19,15 @@ Content-Type: application/json
 
 ###
 
+POST {{HabitTrackerWebApp_HostAddress}}/api/habits/3/mark-completed
+Content-Type: application/json
+
+{
+    "date": "2025-04-18"
+}
+
+###
+
 PUT {{HabitTrackerWebApp_HostAddress}}/api/habits/3
 Content-Type: application/json
 

@@ -35,6 +35,24 @@ namespace HabitTrackerWebApp.Controllers
             return CreatedAtAction(nameof(Get), new { id = habitToTrack.Id }, habitToTrack);
         }
 
+        [HttpPost("{id}/mark-completed")]
+        public IActionResult MarkHabitDone(int id, [FromBody] MarkHabitDoneRequest request)
+        {
+                if (request == null || string.IsNullOrWhiteSpace(request.Date))
+        return BadRequest("Request body is missing or invalid.");
+
+            var habit = HabitTrackerService.Get(id);
+            if (habit is null)
+                return NotFound();
+
+            if (!DateOnly.TryParse(request.Date, out DateOnly completionDate))
+                return BadRequest("Invalid date format.");
+
+            HabitTrackerService.MarkHabitDone(habit, completionDate);
+
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public IActionResult Update(int id, HabitToTrack habitToTrack)
         {
@@ -64,6 +82,11 @@ namespace HabitTrackerWebApp.Controllers
             HabitTrackerService.Delete(id);
 
             return NoContent();
+        }
+
+        public class MarkHabitDoneRequest
+        {
+            public string Date { get; set; }
         }
     }
 }

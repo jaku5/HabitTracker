@@ -24,7 +24,7 @@ public static class HabitTrackerService
         Initialize();
 
         return habitTracker.HabitsToTrack
-            .Select(habit => new HabitToTrack { Name = habit, Id = id++ })
+            .Select(habit => new HabitToTrack { Id = id++, Name = habit.Name, CompletionDates = habit.CompletionDates })
             .ToList();
     }
 
@@ -62,6 +62,13 @@ public static class HabitTrackerService
     {
         habitToTrack.Id = id++;
         habitTracker.AddHabit(habitToTrack.Name!);
+
+        ReloadHabits();
+    }
+
+    public static void MarkHabitDone(HabitToTrack habitToTrack, DateOnly date)
+    {
+        habitTracker.MarkHabitDone(habitToTrack.Name, date);
 
         ReloadHabits();
     }
